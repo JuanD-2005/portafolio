@@ -1,0 +1,118 @@
+/* ─── ProjectCard.module.css ─────────────────────────────────────────────────
+ * Individual project card: device mockup on top, info panel below.
+ * Width adapts to the device type: 200px for mobile, 360px for laptop.
+ * ──────────────────────────────────────────────────────────────────────────── */
+
+.card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.75rem;
+  /* Framer Motion controls opacity/transform — keep will-change here */
+  will-change: transform, opacity;
+}
+
+/* ── Info panel ──────────────────────────────────────────────────────────── */
+
+.info {
+  width: 100%;
+  max-width: 340px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+/* Numbered index */
+.index {
+  font-family:  var(--font-terminal), monospace;
+  font-size:    0.72rem;
+  color:        rgba(160, 156, 150, 0.45);
+  letter-spacing: 0.1em;
+}
+
+/* Project title */
+.title {
+  font-family:    var(--font-heading), sans-serif;
+  font-size:      1.35rem;
+  font-weight:    700;
+  letter-spacing: -0.02em;
+  color:          #f0ede8;
+  line-height:    1.1;
+}
+
+/* Tagline */
+.tagline {
+  font-family: var(--font-body), sans-serif;
+  font-size:   0.8rem;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: rgba(160, 156, 150, 0.55);
+}
+
+/* Description paragraph */
+.description {
+  font-family:  var(--font-body), sans-serif;
+  font-size:    0.88rem;
+  line-height:  1.65;
+  color:        rgba(160, 156, 150, 0.8);
+  max-width:    30ch;
+}
+
+/* ── Tech badges ─────────────────────────────────────────────────────────── */
+
+.badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-top: 0.25rem;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.28rem 0.7rem;
+  border-radius: 999px;
+  font-family:  var(--font-body), sans-serif;
+  font-size:    0.72rem;
+  font-weight:  500;
+  letter-spacing: 0.02em;
+  border: 1px solid;
+  transition: opacity 0.2s;
+}
+
+/* Color variants */
+.badge--emerald { color: #34d399; background: rgba(52,  211, 153, 0.08); border-color: rgba(52,  211, 153, 0.25); }
+.badge--blue    { color: #60a5fa; background: rgba(96,  165, 250, 0.08); border-color: rgba(96,  165, 250, 0.25); }
+.badge--violet  { color: #a78bfa; background: rgba(167, 139, 250, 0.08); border-color: rgba(167, 139, 250, 0.25); }
+.badge--amber   { color: #fbbf24; background: rgba(251, 191,  36, 0.08); border-color: rgba(251, 191,  36, 0.25); }
+.badge--rose    { color: #fb7185; background: rgba(251, 113, 133, 0.08); border-color: rgba(251, 113, 133, 0.25); }
+.badge--cyan    { color: #22d3ee; background: rgba( 34, 211, 238, 0.08); border-color: rgba( 34, 211, 238, 0.25); }
+.badge--slate   { color: #94a3b8; background: rgba(148, 163, 184, 0.08); border-color: rgba(148, 163, 184, 0.25); }
+
+/* ── Links row ───────────────────────────────────────────────────────────── */
+
+.links {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 0.25rem;
+}
+
+.link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-family: var(--font-body), sans-serif;
+  font-size:   0.8rem;
+  font-weight: 500;
+  color:       rgba(160, 156, 150, 0.6);
+  text-decoration: none;
+  border-bottom: 1px solid rgba(160, 156, 150, 0.15);
+  padding-bottom: 1px;
+  transition: color 0.2s, border-color 0.2s;
+}
+
+.link:hover {
+  color:        rgba(240, 237, 232, 0.9);
+  border-color: rgba(240, 237, 232, 0.35);
+}

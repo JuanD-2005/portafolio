@@ -1,36 +1,84 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Juan Paredes — Portfolio
 
-## Getting Started
+Full Stack Web & Mobile Developer portfolio. Built with Next.js 14, Tailwind CSS, GSAP + ScrollTrigger, and Framer Motion.
 
-First, run the development server:
+---
+
+## Quickstart
 
 ```bash
+# 1. Create the Next.js project (if you haven't already)
+npx create-next-app@latest portfolio \
+  --typescript \
+  --tailwind \
+  --eslint \
+  --app \
+  --src-dir=false \
+  --import-alias="@/*"
+
+cd portfolio
+
+# 2. Install animation dependencies
+npm install gsap framer-motion
+
+# 3. Copy the files from this bundle into your project root
+
+# 4. Start the dev server
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+---
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## File map
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```
+app/
+  layout.tsx          ← Root layout, fonts (VT323 · Syne · DM Sans), metadata
+  page.tsx            ← Composes all sections
+  globals.css         ← Design tokens, reset, base typography
 
-## Learn More
+components/
+  hero/
+    HeroCRT.tsx       ← CRT monitor + typewriter terminal (Sprint 1 ✅)
+    HeroCRT.module.css← All CRT visual effects (scanlines, flicker, vignette)
+  layout/             ← (Sprint 2) SmoothScroller, Navbar
+  projects/           ← (Sprint 3) ProjectsSection, DeviceMockup
+  contact/            ← (Sprint 4) TerminalForm, CVButton
 
-To learn more about Next.js, take a look at the following resources:
+hooks/
+  useTypewriter.ts    ← Sequential typing animation hook
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+data/
+  terminal.ts         ← Boot sequence lines
+  projects.ts         ← (Sprint 3) Project data
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+animations/
+  variants.ts         ← Framer Motion reusable variants
+  gsap.ts             ← (Sprint 2) GSAP ScrollTrigger helpers
 
-## Deploy on Vercel
+types/
+  index.ts            ← Shared TypeScript interfaces
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+---
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Animation responsibility split
+
+| What                        | Library         |
+|-----------------------------|-----------------|
+| CRT power-on / scanlines    | Pure CSS        |
+| Typewriter text             | Custom hook     |
+| Scroll zoom-out (CRT → modern) | GSAP ScrollTrigger |
+| Horizontal project scroll   | GSAP ScrollTrigger |
+| Section entrance reveals    | Framer Motion   |
+| Hover micro-interactions    | Framer Motion   |
+| Terminal form interactions  | Framer Motion   |
+
+---
+
+## Sprint roadmap
+
+- [x] Sprint 1 — Hero CRT + typewriter
+- [ ] Sprint 2 — GSAP scroll zoom-out transition
+- [ ] Sprint 3 — Projects section (horizontal scroll + CSS device mockups)
+- [ ] Sprint 4 — Contact terminal form + CV download

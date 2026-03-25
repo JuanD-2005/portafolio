@@ -1,0 +1,105 @@
+/* ─── Navbar.module.css ──────────────────────────────────────────────────────
+ * Floating pill navbar — glassmorphism on a dark background.
+ * Position: fixed top, centered with left:50% + translateX(-50%).
+ * ──────────────────────────────────────────────────────────────────────────── */
+
+.root {
+  position: fixed;
+  top: 1.25rem;
+  left: 50%;
+  /* translateX(-50%) applied via Framer Motion initial/animate */
+  z-index: 100;
+  /* pointer-events are always on — Framer opacity handles visibility */
+}
+
+.pill {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.4rem 0.5rem;
+  border-radius: 999px;
+
+  /* Glassmorphism: dark tinted surface + thin light border */
+  background: rgba(10, 10, 10, 0.72);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+
+  /* Subtle outer glow */
+  box-shadow:
+    0 0 0 1px rgba(0, 0, 0, 0.5),
+    0 4px 24px rgba(0, 0, 0, 0.45),
+    0 1px 0 rgba(255, 255, 255, 0.04) inset;
+}
+
+/* ── Nav links ──────────────────────────────────────────────────────────── */
+
+.link {
+  position: relative;
+  display: flex;
+  align-items: center;
+  padding: 0.45rem 0.95rem;
+  border-radius: 999px;
+  font-family: var(--font-body), sans-serif;
+  font-size: 0.82rem;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  color: rgba(240, 237, 232, 0.65);
+  text-decoration: none;
+  transition: color 0.2s ease;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.link:hover {
+  color: rgba(240, 237, 232, 0.95);
+}
+
+/* Active indicator pill (slides under the active link) */
+.activeIndicator {
+  position: absolute;
+  inset: 0;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.07);
+  /* layoutId drives Framer Motion's layout animation */
+}
+
+/* ── Separator dot ──────────────────────────────────────────────────────── */
+
+.dot {
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.12);
+  flex-shrink: 0;
+}
+
+/* ── CTA button inside the pill ─────────────────────────────────────────── */
+
+.ctaButton {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.45rem 1rem;
+  margin-left: 0.25rem;
+  border-radius: 999px;
+  font-family: var(--font-body), sans-serif;
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: #0a0a0a;
+  background: rgba(240, 237, 232, 0.92);
+  border: none;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background 0.2s ease, transform 0.15s ease;
+  white-space: nowrap;
+}
+
+.ctaButton:hover {
+  background: #ffffff;
+  transform: scale(1.03);
+}
+
+.ctaButton:active {
+  transform: scale(0.98);
+}

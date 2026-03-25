@@ -1,0 +1,280 @@
+/* ─── ActionSection.module.css ───────────────────────────────────────────────
+ * The bridge section between CRT hero and the projects grid.
+ * Bento-style layout: headline + two CTAs + stats chips + availability badge.
+ * ──────────────────────────────────────────────────────────────────────────── */
+
+/* ── Keyframes ───────────────────────────────────────────────────────────── */
+
+@keyframes badge-pulse {
+  0%,  100% { box-shadow: 0 0 0 0 rgba(52, 211, 153, 0.35); }
+  50%        { box-shadow: 0 0 0 6px rgba(52, 211, 153, 0); }
+}
+
+/* ── Section wrapper ─────────────────────────────────────────────────────── */
+
+.section {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 7rem 1.5rem 6rem;
+  background: #080808;
+  overflow: hidden;
+}
+
+/* Subtle noise texture via a repeating gradient (no external image) */
+.section::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    radial-gradient(circle at 25% 30%, rgba(99, 102, 241, 0.045) 0%, transparent 55%),
+    radial-gradient(circle at 75% 70%, rgba(20, 184, 166, 0.035) 0%, transparent 55%);
+  pointer-events: none;
+}
+
+/* Top gradient fade from the CRT section */
+.section::after {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 8rem;
+  background: linear-gradient(to bottom, #020202, transparent);
+  pointer-events: none;
+}
+
+/* ── Inner container ─────────────────────────────────────────────────────── */
+
+.inner {
+  position: relative;
+  width: 100%;
+  max-width: 900px;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 3rem;
+}
+
+/* ── Availability badge ──────────────────────────────────────────────────── */
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.4rem 1rem;
+  border-radius: 999px;
+  border: 1px solid rgba(52, 211, 153, 0.25);
+  background: rgba(52, 211, 153, 0.06);
+  font-family: var(--font-body), sans-serif;
+  font-size: 0.78rem;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  color: #34d399;
+}
+
+.badgeDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #34d399;
+  animation: badge-pulse 2s ease-in-out infinite;
+}
+
+/* ── Headline block ──────────────────────────────────────────────────────── */
+
+.headline {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.headingTop {
+  font-family:    var(--font-heading), sans-serif;
+  font-size:      clamp(2.6rem, 7vw, 5.5rem);
+  font-weight:    700;
+  line-height:    1.0;
+  letter-spacing: -0.03em;
+  color:          #f0ede8;
+}
+
+/* Accent word highlight */
+.accent {
+  background: linear-gradient(135deg, #e8ff47 0%, #a8ef20 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.headingSub {
+  font-family:  var(--font-body), sans-serif;
+  font-size:    clamp(1rem, 2vw, 1.2rem);
+  font-weight:  400;
+  color:        rgba(160, 156, 150, 0.9);
+  letter-spacing: 0.01em;
+  max-width: 520px;
+}
+
+/* ── CTA row ─────────────────────────────────────────────────────────────── */
+
+.ctaRow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+/* Primary button — the CV download */
+.btnPrimary {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.85rem 1.8rem;
+  border-radius: 999px;
+  border: none;
+  background: #f0ede8;
+  color: #0a0a0a;
+  font-family: var(--font-body), sans-serif;
+  font-size: 0.92rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  cursor: pointer;
+  text-decoration: none;
+  overflow: hidden;
+  transition: transform 0.15s ease, box-shadow 0.2s ease;
+  box-shadow: 0 2px 16px rgba(240, 237, 232, 0.15);
+}
+
+.btnPrimary:hover {
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 6px 28px rgba(240, 237, 232, 0.22);
+}
+
+.btnPrimary:active {
+  transform: translateY(0) scale(0.99);
+}
+
+/* Shimmer sweep on hover */
+.btnPrimary::after {
+  content: '';
+  position: absolute;
+  top: 0; left: -100%;
+  width: 60%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.35), transparent);
+  transition: left 0.4s ease;
+  pointer-events: none;
+}
+
+.btnPrimary:hover::after {
+  left: 150%;
+}
+
+/* Icon wrapper inside primary button — rotates 15° on hover */
+.btnIcon {
+  display: flex;
+  transition: transform 0.3s ease;
+}
+
+.btnPrimary:hover .btnIcon {
+  transform: rotate(15deg) translateY(1px);
+}
+
+/* Secondary ghost button */
+.btnSecondary {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.85rem 1.8rem;
+  border-radius: 999px;
+  border: 1px solid rgba(240, 237, 232, 0.15);
+  background: transparent;
+  color: rgba(240, 237, 232, 0.7);
+  font-family: var(--font-body), sans-serif;
+  font-size: 0.92rem;
+  font-weight: 500;
+  cursor: pointer;
+  text-decoration: none;
+  transition: border-color 0.2s ease, color 0.2s ease, background 0.2s ease;
+}
+
+.btnSecondary:hover {
+  border-color: rgba(240, 237, 232, 0.35);
+  color: rgba(240, 237, 232, 0.95);
+  background: rgba(240, 237, 232, 0.05);
+}
+
+/* ── Stats row ───────────────────────────────────────────────────────────── */
+
+.statsRow {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.statItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.2rem;
+}
+
+.statValue {
+  font-family: var(--font-heading), sans-serif;
+  font-size: 1.8rem;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  color: #f0ede8;
+}
+
+.statLabel {
+  font-family: var(--font-body), sans-serif;
+  font-size: 0.72rem;
+  font-weight: 400;
+  color: rgba(160, 156, 150, 0.65);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.statDivider {
+  width: 1px;
+  height: 2.5rem;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+/* ── Tech pills row ──────────────────────────────────────────────────────── */
+
+.techRow {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.techPill {
+  padding: 0.3rem 0.8rem;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.04);
+  font-family: var(--font-body), sans-serif;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: rgba(160, 156, 150, 0.85);
+  letter-spacing: 0.02em;
+  transition: border-color 0.2s, color 0.2s;
+}
+
+.techPill:hover {
+  border-color: rgba(255, 255, 255, 0.18);
+  color: rgba(240, 237, 232, 0.9);
+}
