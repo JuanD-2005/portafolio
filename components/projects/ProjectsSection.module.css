@@ -1,0 +1,87 @@
+/* ─── ProjectsSection.module.css ─────────────────────────────────────────────
+ * Dark section housing the 3 featured project cards.
+ * Responsive: single column on mobile, auto-fit 3-col on desktop.
+ * ──────────────────────────────────────────────────────────────────────────── */
+
+.section {
+  position: relative;
+  width: 100%;
+  padding: 7rem 1.5rem 4rem;
+  background: #060606;
+}
+
+/* Separator gradient at top from ActionSection */
+.section::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.06) 30%,
+    rgba(255, 255, 255, 0.06) 70%,
+    transparent 100%
+  );
+}
+
+/* ── Inner max-width container ───────────────────────────────────────────── */
+
+.inner {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* ── Section header ──────────────────────────────────────────────────────── */
+
+.header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 5rem;
+}
+
+.eyebrow {
+  font-family:  var(--font-terminal), monospace;
+  font-size:    0.72rem;
+  letter-spacing: 0.14em;
+  color:        rgba(160, 156, 150, 0.45);
+  margin-bottom: 0.5rem;
+}
+
+.title {
+  font-family:    var(--font-heading), sans-serif;
+  font-size:      clamp(2rem, 4.5vw, 3.5rem);
+  font-weight:    700;
+  letter-spacing: -0.03em;
+  color:          #f0ede8;
+  line-height:    1.0;
+}
+
+.subtitle {
+  font-family: var(--font-body), sans-serif;
+  font-size:   0.9rem;
+  color:       rgba(160, 156, 150, 0.6);
+  max-width:   30ch;
+  line-height: 1.6;
+  text-align:  right;
+}
+
+/* ── Cards grid ──────────────────────────────────────────────────────────── */
+
+.grid {
+  display: grid;
+  /* 3 columns on large screens, collapses gracefully */
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 4rem 3rem;
+  justify-items: center;
+  align-items: start;
+}
+
+@media (max-width: 700px) {
+  .header { flex-direction: column; }
+  .subtitle { text-align: left; }
+  .grid { gap: 5rem 0; }
+}
