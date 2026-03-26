@@ -3,6 +3,7 @@
 import { motion, AnimatePresence } from 'framer-motion'
 import { useScrollThreshold }      from '@/hooks/useScrollThreshold'
 import { navbarDrop }              from '@/animations/variants'
+import { makeScrollHandler }       from '@/lib/scrollTo'
 import s                           from './Navbar.module.css'
 
 const NAV_LINKS = [
@@ -49,12 +50,7 @@ export default function Navbar() {
                 <a
                   href={link.href}
                   className={s.link}
-                  onClick={(e) => {
-                    e.preventDefault()
-                    document
-                      .querySelector(link.href)
-                      ?.scrollIntoView({ behavior: 'smooth' })
-                  }}
+                  onClick={makeScrollHandler(link.href)}
                 >
                   {link.label}
                 </a>
@@ -62,7 +58,11 @@ export default function Navbar() {
             ))}
 
             {/* CTA separado: ir directo a contacto */}
-            <a href="#contact" className={s.ctaButton}>
+            <a
+              href="#contact"
+              className={s.ctaButton}
+              onClick={makeScrollHandler('#contact')}
+            >
               Hablemos
             </a>
           </div>

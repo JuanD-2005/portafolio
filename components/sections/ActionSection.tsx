@@ -2,6 +2,7 @@
 
 import { motion } from 'framer-motion'
 import { fadeUp, fadeUpSlow, staggerContainer } from '@/animations/variants'
+import { makeScrollHandler }                     from '@/lib/scrollTo'
 import s from './ActionSection.module.css'
 
 const TECH_STACK = [
@@ -103,10 +104,7 @@ export default function ActionSection() {
           <a
             href="#contact"
             className={s.btnSecondary}
-            onClick={(e) => {
-              e.preventDefault()
-              document.querySelector('#contact')?.scrollIntoView({ behavior: 'smooth' })
-            }}
+            onClick={makeScrollHandler('#contact')}
           >
             Contactar
             <ArrowIcon />

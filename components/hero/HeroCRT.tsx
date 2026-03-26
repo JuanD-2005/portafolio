@@ -53,8 +53,8 @@ export default function HeroCRT() {
     //   We take the larger of the two so the screen *covers* the viewport
     //   (like CSS background-size: cover) — no letterboxing, no pillarboxing.
     //   The +2% overshoot hides the bezel corners when scaled up.
-    const scaleX    = (vw / screenRect.width)  * 0.5
-    const scaleY    = (vh / screenRect.height) * 0.5
+    const scaleX    = (vw / screenRect.width)  * 1.02
+    const scaleY    = (vh / screenRect.height) * 1.02
     const fromScale = Math.max(scaleX, scaleY)
 
     // Snap to zoomed-in state immediately (no animation, happens before paint)
