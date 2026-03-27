@@ -18,12 +18,12 @@
  * it sits in a completely separate stacking context — zero interference.
  */
 
-import HeroCRT         from '@/components/hero/HeroCRT'
+import HeroWrapper     from '@/components/hero/HeroWrapper'
 import Navbar          from '@/components/layout/Navbar'
 import ActionSection   from '@/components/sections/ActionSection'
 import ProjectsSection from '@/components/projects/ProjectsSection'
 import ProjectArchive  from '@/components/projects/ProjectArchive'
-import ContactSection from '@/components/contact/ContactSection'  
+import ContactSection  from '@/components/contact/ContactSection'
 
 export default function Home() {
   return (
@@ -32,8 +32,8 @@ export default function Home() {
       <Navbar />
 
       <main>
-        {/* ── 1. CRT Hero ──────────────────────────────────────────── */}
-        <HeroCRT />
+        {/* ── 1. CRT Hero (Renderizado solo en el cliente) ────────── */}
+        <HeroWrapper />
 
         {/* ── 2. Action / bridge ───────────────────────────────────── */}
         <ActionSection />
