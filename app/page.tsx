@@ -23,7 +23,7 @@ import Navbar          from '@/components/layout/Navbar'
 import ActionSection   from '@/components/sections/ActionSection'
 import ProjectsSection from '@/components/projects/ProjectsSection'
 import ProjectArchive  from '@/components/projects/ProjectArchive'
-// import ContactSection from '@/components/contact/ContactSection'  ← Sprint 4
+import ContactSection from '@/components/contact/ContactSection'  
 
 export default function Home() {
   return (
@@ -45,7 +45,7 @@ export default function Home() {
         <ProjectArchive />
 
         {/* ── 5. Contact — Sprint 4 ────────────────────────────────── */}
-        {/* <ContactSection /> */}
+        { <ContactSection /> }
       </main>
     </>
   )

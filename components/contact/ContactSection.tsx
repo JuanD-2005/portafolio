@@ -1,6 +1,6 @@
 'use client'
 
-import { useActionState, useRef }        from 'react'
+import { useActionState, useEffect, useRef } from 'react'
 import { motion }                         from 'framer-motion'
 import { sendEmail, type ActionState }    from '@/app/actions/sendEmail'
 import { staggerContainer, fadeUp, fadeUpSlow } from '@/animations/variants'
@@ -79,10 +79,12 @@ function ContactForm() {
   const formRef = useRef<HTMLFormElement>(null)
   const [state, action, isPending] = useActionState(sendEmail, INITIAL_STATE)
 
-  // Clear form on successful submission
-  if (state.status === 'success' && formRef.current) {
-    formRef.current.reset()
-  }
+  // Clear form on successful submission AFTER render
+  useEffect(() => {
+    if (state.status === 'success' && formRef.current) {
+      formRef.current.reset();
+    }
+  }, [state.status])
 
   return (
     <form ref={formRef} action={action} className={s.form} noValidate>
