@@ -42,13 +42,12 @@ export default function HeroCRT() {
         scrollTrigger: {
           trigger:       section,
           start:         'top top',
-          end:           '+=100%', // Reduje un poco el scroll extra ya que el efecto es menor
+          end:           '+=40%',
           pin:           true,
           pinSpacing:    true,
-          scrub:         1.2,
+          scrub:         0.4,
           anticipatePin: 1,
           invalidateOnRefresh: true,
-          // Eliminamos el onRefresh problematico que causaba los saltos
         },
       })
 
