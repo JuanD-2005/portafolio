@@ -497,6 +497,7 @@
   /* Less wasted space around the screen inside the bezel */
   .monitor {
     width: min(92vw, 480px);
+    aspect-ratio: 1 / 1.15;
     padding: 0.55rem 0.55rem 1.65rem;
     border-radius: 1.4rem;
   }
