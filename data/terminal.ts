@@ -1,7 +1,7 @@
 import type { TerminalLine } from '@/types'
 
 export const bootSequence: TerminalLine[] = [
-  { text: 'JP-OS BIOS v2.4.1  —  Copyright (C) 2024', speed: 28, delay: 0   },
+  { text: 'JP-OS BIOS v2.4.1  —  Copyright (C) 2026', speed: 28, delay: 0   },
   { text: 'RAM test: 655360 bytes OK',                 speed: 28, delay: 50  },
   { text: 'Detecting hardware...',                     speed: 28, delay: 100 },
   { text: '',                                          speed: 1,  delay: 350 },
