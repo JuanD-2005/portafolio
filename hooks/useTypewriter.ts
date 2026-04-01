@@ -5,7 +5,7 @@ import type { TerminalLine } from '@/types'
 
 interface TypewriterState {
   /** Lines accumulated so far, including the one currently being typed */
-  displayedLines: string[]
+  displayedLines: Array<{ id: string; text: string }>
   /** True once every line has finished typing */
   isComplete: boolean
   /** Index of the line currently being typed */
@@ -24,7 +24,7 @@ export function useTypewriter(
   sequence: TerminalLine[],
   startDelay = 700,
 ): TypewriterState {
-  const [displayedLines, setDisplayedLines] = useState<string[]>([])
+  const [displayedLines, setDisplayedLines] = useState<Array<{ id: string; text: string }>>([])
   const [isComplete, setIsComplete]         = useState(false)
   const [currentLineIndex, setCurrentLineIndex] = useState(0)
 
@@ -33,8 +33,9 @@ export function useTypewriter(
   const stateRef = useRef({
     lineIdx: 0,
     charIdx: 0,
-    lines:   [] as string[],
+    lines:   [] as Array<{ id: string; text: string }>,
   })
+  const lineIdRef = useRef(0)
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   const clear = useCallback(() => {
@@ -43,9 +44,9 @@ export function useTypewriter(
 
   useEffect(() => {
     // ── Accessibility: skip animation for motion-sensitive users ──────────────
-    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    const reduced = globalThis.window.matchMedia('(prefers-reduced-motion: reduce)').matches
     if (reduced) {
-      setDisplayedLines(sequence.map((l) => l.text))
+      setDisplayedLines(sequence.map((l, index) => ({ id: `line-${index}`, text: l.text })))
       setCurrentLineIndex(sequence.length - 1)
       setIsComplete(true)
       return
@@ -67,14 +68,20 @@ export function useTypewriter(
 
       // ── Start a new line ───────────────────────────────────────────────────
       if (charIdx === 0) {
-        s.lines = [...s.lines, '']
+        s.lines = [...s.lines, { id: `line-${lineIdRef.current++}`, text: '' }]
         setDisplayedLines([...s.lines])
         setCurrentLineIndex(lineIdx)
       }
 
       if (charIdx < line.text.length) {
         // Type the next character
-        s.lines[s.lines.length - 1] = line.text.slice(0, charIdx + 1)
+        const lastLine = s.lines.at(-1)
+        if (!lastLine) return
+
+        s.lines[s.lines.length - 1] = {
+          ...lastLine,
+          text: line.text.slice(0, charIdx + 1),
+        }
         s.charIdx++
         setDisplayedLines([...s.lines])
         timerRef.current = setTimeout(tick, charSpeed)

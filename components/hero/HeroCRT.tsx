@@ -20,18 +20,20 @@ export default function HeroCRT() {
   useGSAP(() => {
     if (globalThis.window === undefined) return
 
-    const initAnimation = () => {
-      const section = sectionRef.current
-      const wrapper = wrapperRef.current
-      if (!section || !wrapper) return
+    const section = sectionRef.current
+    const wrapper = wrapperRef.current
+    if (!section || !wrapper) return
 
-      // Limpiamos cualquier ScrollTrigger previo en esta sección
-      ScrollTrigger.getAll()
-        .filter(st => st.trigger === section)
-        .forEach(st => st.kill())
+    // Limpiamos triggers previos
+    ScrollTrigger.getAll()
+      .filter(st => st.trigger === section)
+      .forEach(st => st.kill())
 
-      // 1. Efecto minimo y fijo: empezamos en 1.1 (10% mas grande)
-      // en lugar de calcularlo segun el tamano de la pantalla.
+    // Inicializamos matchMedia de GSAP
+    const mm = gsap.matchMedia()
+
+    // 🖥️ SOLO PARA ESCRITORIO (Pantallas de 768px o más)
+    mm.add('(min-width: 768px)', () => {
       gsap.set(wrapper, {
         scale: 1.1,
         transformOrigin: '50% 50%',
@@ -42,7 +44,7 @@ export default function HeroCRT() {
         scrollTrigger: {
           trigger:       section,
           start:         'top top',
-          end:           '+=30%',
+          end:           '+=40%',
           pin:           true,
           pinSpacing:    true,
           scrub:         true,
@@ -50,17 +52,21 @@ export default function HeroCRT() {
         },
       })
 
-      // 2. Animamos hacia la escala natural (1)
       tl.to(wrapper, { scale: 1, ease: 'none' })
+    })
 
-      ScrollTrigger.refresh()
-    }
+    // 📱 SOLO PARA MÓVILES (Pantallas de 767px o menos)
+    mm.add('(max-width: 767px)', () => {
+      // Forzamos el tamaño normal y NO creamos ningún ScrollTrigger.
+      // El usuario simplemente scrolleará la página de forma natural y fluida.
+      gsap.set(wrapper, {
+        scale: 1,
+        force3D: false,
+      })
+    })
 
-    if (document.readyState === 'complete') {
-      initAnimation()
-    } else {
-      window.addEventListener('load', initAnimation, { once: true })
-    }
+    // Limpiamos matchMedia al desmontar el componente
+    return () => mm.revert()
 
   }, { scope: sectionRef })
 
@@ -115,13 +121,13 @@ export default function HeroCRT() {
 
                 {displayedLines.map((line, idx) => {
                   const isCurrentLine = idx === displayedLines.length - 1
-                  const isEmpty       = line === ''
+                  const isEmpty       = line.text === ''
                   return (
                     <div
-                      key={idx}
+                      key={line.id}
                       className={isEmpty ? s.terminalLineEmpty : s.terminalLine}
                     >
-                      {isEmpty ? null : line}
+                      {isEmpty ? null : line.text}
                       {isCurrentLine && !isComplete && !isEmpty && (
                         <span className={s.cursor} aria-hidden="true" />
                       )}
