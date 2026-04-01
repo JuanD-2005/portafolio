@@ -11,21 +11,21 @@ import s from './ContactSection.module.css'
 const LINKS = [
   {
     key:   'github',
-    label: '"github.com/juanparedes"',
-    href:  'https://github.com/juanparedes',
-    display: 'github.com/juanparedes',
+    label: '"github.com/JuanD-2005"',
+    href:  'https://github.com/JuanD-2005',
+    display: 'github.com/JuanD-2005',
   },
   {
     key:   'linkedin',
-    label: '"linkedin.com/in/juanparedes"',
-    href:  'https://linkedin.com/in/juanparedes',
-    display: 'linkedin.com/in/juanparedes',
+    label: '"linkedin.com/in/juan-diego-paredes-gámez"',
+    href:  'https://www.linkedin.com/in/juan-diego-paredes-g%C3%A1mez-21415338a/',
+    display: 'linkedin.com/in/juan-diego-paredes-gámez',
   },
   {
     key:   'email',
-    label: '"hello@juanparedes.dev"',
-    href:  'mailto:hello@juanparedes.dev',
-    display: 'hello@juanparedes.dev',
+    label: '"jdpgparedes@gmail.com"',
+    href:  'mailto:jdpgparedes@gmail.com',
+    display: 'jdpgparedes@gmail.com',
   },
 ] as const
 

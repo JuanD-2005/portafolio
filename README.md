@@ -314,6 +314,6 @@ npm run lint
 
 Juan Paredes
 
-- GitHub: https://github.com/juanparedes
-- LinkedIn: https://linkedin.com/in/juanparedes
-- Email: hello@juanparedes.dev
+- GitHub: https://github.com/JuanD-2005
+- LinkedIn: https://www.linkedin.com/in/juan-diego-paredes-g%C3%A1mez-21415338a/
+- Email: jdpgparedes@gmail.com
