@@ -18,65 +18,43 @@ export default function HeroCRT() {
   const { displayedLines, isComplete } = useTypewriter(bootSequence, 650)
 
   useGSAP(() => {
-    if (typeof window === 'undefined') return
+    if (globalThis.window === undefined) return
 
     const initAnimation = () => {
       const section = sectionRef.current
       const wrapper = wrapperRef.current
-      const screen  = screenRef.current
-      if (!section || !wrapper || !screen) return
+      if (!section || !wrapper) return
 
-      // Kill any existing ScrollTrigger on this section to prevent duplicates
-      // on HMR or React StrictMode double-invoke
+      // Limpiamos cualquier ScrollTrigger previo en esta sección
       ScrollTrigger.getAll()
         .filter(st => st.trigger === section)
         .forEach(st => st.kill())
 
-      const screenRect = screen.getBoundingClientRect()
-      const vw = window.innerWidth
-      const vh = window.innerHeight
-
-      const safeWidth  = screenRect.width  > 10 ? screenRect.width  : 800
-      const safeHeight = screenRect.height > 10 ? screenRect.height : 600
-
-      const scaleX    = (vw / safeWidth)  * 1.02
-      const scaleY    = (vh / safeHeight) * 1.02
-      const fromScale = Math.max(scaleX, scaleY)
-
-      // Set initial scale before paint — no will-change in CSS, GSAP force3D
-      // handles GPU promotion on its own without double-promoting
+      // 1. Efecto minimo y fijo: empezamos en 1.1 (10% mas grande)
+      // en lugar de calcularlo segun el tamano de la pantalla.
       gsap.set(wrapper, {
-        scale:           fromScale,
+        scale: 1.1,
         transformOrigin: '50% 50%',
-        force3D:         true,
+        force3D: true,
       })
 
       const tl = gsap.timeline({
         scrollTrigger: {
           trigger:       section,
           start:         'top top',
-          end:           '+=130%',
+          end:           '+=100%', // Reduje un poco el scroll extra ya que el efecto es menor
           pin:           true,
           pinSpacing:    true,
           scrub:         1.2,
           anticipatePin: 1,
-          // Invalidate on resize so scale recalculates on orientation change
           invalidateOnRefresh: true,
-          onRefresh: (self) => {
-            // Recalculate fromScale after resize
-            const r = screen.getBoundingClientRect()
-            const w = r.width  > 10 ? r.width  : 800
-            const h = r.height > 10 ? r.height : 600
-            const sx = (window.innerWidth  / w) * 1.02
-            const sy = (window.innerHeight / h) * 1.02
-            gsap.set(wrapper, { scale: Math.max(sx, sy) })
-          },
+          // Eliminamos el onRefresh problematico que causaba los saltos
         },
       })
 
+      // 2. Animamos hacia la escala natural (1)
       tl.to(wrapper, { scale: 1, ease: 'none' })
 
-      // Single refresh after setup — not in HeroWrapper
       ScrollTrigger.refresh()
     }
 
@@ -86,7 +64,6 @@ export default function HeroCRT() {
       window.addEventListener('load', initAnimation, { once: true })
     }
 
-    // useGSAP handles cleanup via scope — no manual kill needed here
   }, { scope: sectionRef })
 
   return (

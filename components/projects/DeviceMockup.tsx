@@ -67,7 +67,17 @@ export default function DeviceMockup({
   // Resolve what goes inside the screen
   const screenInner = children ?? (
     screenshotUrl
-      ? <div style={{ width: '100%', height: '100%', backgroundImage: `url(${screenshotUrl})`, backgroundSize: 'cover', backgroundPosition: 'top' }} />
+      ? <img
+          src={screenshotUrl}
+          alt="Mockup del proyecto"
+          style={{
+            width: '100%',
+            height: '100%',
+            objectFit: 'cover',
+            objectPosition: 'top',
+            display: 'block'
+          }}
+        />
       : <ScreenPlaceholder accentColor={accentColor} />
   )
 
