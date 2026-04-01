@@ -1,5 +1,6 @@
 'use client'
 
+import { useEffect, useRef, useState } from 'react'
 import { motion } from 'framer-motion'
 import { fadeUp, fadeUpSlow, staggerContainer } from '@/animations/variants'
 import { makeScrollHandler }                     from '@/lib/scrollTo'
@@ -55,6 +56,34 @@ function ArrowIcon() {
  * cleanly even if the user arrives at this section mid-scroll (e.g. deep links).
  */
 export default function ActionSection() {
+  const [showCvMenu, setShowCvMenu] = useState(false)
+  const cvMenuRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    if (!showCvMenu) return
+
+    const handlePointerDown = (event: PointerEvent) => {
+      const target = event.target as Node | null
+      if (!target || !cvMenuRef.current?.contains(target)) {
+        setShowCvMenu(false)
+      }
+    }
+
+    const handleEscape = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        setShowCvMenu(false)
+      }
+    }
+
+    globalThis.addEventListener('pointerdown', handlePointerDown)
+    globalThis.addEventListener('keydown', handleEscape)
+
+    return () => {
+      globalThis.removeEventListener('pointerdown', handlePointerDown)
+      globalThis.removeEventListener('keydown', handleEscape)
+    }
+  }, [showCvMenu])
+
   return (
     <section id="action" aria-label="Presentación" className={s.section}>
       <motion.div
@@ -69,14 +98,14 @@ export default function ActionSection() {
         <motion.div variants={fadeUp}>
           <span className={s.badge}>
             <span className={s.badgeDot} aria-hidden="true" />
-            Disponible para proyectos
+            {' '}Disponible para proyectos
           </span>
         </motion.div>
 
         {/* Headline */}
         <motion.div className={s.headline} variants={fadeUpSlow}>
           <h1 className={s.headingTop}>
-            Construyo&nbsp;
+            {'Construyo '}
             <span className={s.accent}>experiencias</span>
             <br />
             digitales.
@@ -89,17 +118,45 @@ export default function ActionSection() {
 
         {/* CTA buttons */}
         <motion.div className={s.ctaRow} variants={fadeUp}>
-          <a
-            href="/Juan_Paredes_CV.pdf"
-            download="Juan_Paredes_CV.pdf"
-            className={s.btnPrimary}
-            aria-label="Descargar CV de Juan Paredes en PDF"
-          >
-            <span className={s.btnIcon}>
-              <DownloadIcon />
-            </span>
-            Descargar CV
-          </a>
+          <div ref={cvMenuRef} className={s.cvMenuWrapper}>
+            <button
+              type="button"
+              className={[s.btnPrimary, s.cvMenuButton].join(' ')}
+              aria-label="Descargar CV en Español o English"
+              aria-expanded={showCvMenu}
+              aria-controls="cv-download-menu"
+              onClick={() => setShowCvMenu(prev => !prev)}
+            >
+              <span className={s.btnIcon}>
+                <DownloadIcon />
+              </span>
+              {' '}Descargar CV
+            </button>
+
+            {showCvMenu && (
+              <div id="cv-download-menu" className={s.cvMenu} role="menu">
+                <a
+                  href="/Juan_Paredes_CV.pdf"
+                  download="Juan_Paredes_CV.pdf"
+                  role="menuitem"
+                  className={s.cvMenuItem}
+                  onClick={() => setShowCvMenu(false)}
+                >
+                  Español
+                </a>
+                <span className={s.cvMenuDivider} aria-hidden="true" />
+                <a
+                  href="/Resume JuanParedes.pdf"
+                  download="Resume JuanParedes.pdf"
+                  role="menuitem"
+                  className={s.cvMenuItem}
+                  onClick={() => setShowCvMenu(false)}
+                >
+                  English
+                </a>
+              </div>
+            )}
+          </div>
 
           <a
             href="#contact"
