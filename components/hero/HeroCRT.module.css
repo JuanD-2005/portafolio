@@ -468,3 +468,100 @@
     0 0 22px rgba(0, 255, 65, 0.35);
   animation: ambient-pulse 3.5s ease-in-out infinite;
 }
+
+
+/* ══════════════════════════════════════════════════════════════════════
+   RESPONSIVE — Mobile (< 768px)
+   ══════════════════════════════════════════════════════════════════════
+
+   Problem: On narrow screens the monitor padding + terminal padding
+   consume most of the available space, leaving almost no room for text.
+   The clamp(0.88rem, 1.55vw, ...) bottoms out at 0.88rem but the
+   paddings mean the effective text area is tiny.
+
+   Fix strategy:
+   - Shrink monitor outer padding (especially the 3rem bottom for stand)
+   - Shrink bezel padding
+   - Shrink terminal padding
+   - Use a vw-relative font-size that fills the reduced screen width
+   - Reduce the monitor aspect ratio bottom space to avoid cropping
+   ══════════════════════════════════════════════════════════════════════ */
+
+@media (max-width: 767px) {
+
+  /* Less wasted space around the screen inside the bezel */
+  .monitor {
+    padding: 0.65rem 0.65rem 2rem;
+    border-radius: 1.4rem;
+  }
+
+  .bezel {
+    padding: 0.3rem;
+    border-radius: 0.9rem;
+  }
+
+  .screen {
+    border-radius: 0.5rem;
+  }
+
+  /*
+   * Terminal font: switch from viewport-width clamp to a monitor-width-aware
+   * value. The monitor is min(86vw, 800px), so on a 375px screen it's
+   * ~322px wide. After paddings, the terminal is ~270px wide.
+   * 3.2vw ≈ 12px on 375px — readable but fits all boot sequence lines.
+   */
+  .terminal {
+    padding: 0.75rem 0.85rem;
+    font-size: clamp(0.7rem, 3.2vw, 0.88rem);
+    line-height: 1.5;
+  }
+
+  .terminalHeader {
+    font-size: 0.68em;
+    margin-bottom: 0.6rem;
+    letter-spacing: 0.03em;
+  }
+
+  .terminalLine {
+    min-height: 1.5em;
+  }
+
+  .terminalLineEmpty {
+    min-height: 0.5em;
+  }
+
+  /* Cursor scales with the smaller font */
+  .cursor {
+    width: 0.5em;
+    height: 0.95em;
+  }
+
+  /* Stand is clipped by the shorter padding — shrink it */
+  .stand {
+    bottom: -1.4rem;
+  }
+
+  .standNeck {
+    width: 3.5rem;
+    height: 1.2rem;
+  }
+
+  .standBase {
+    width: 6rem;
+    height: 0.5rem;
+  }
+
+  /* Power LED: keep it visible but less intrusive */
+  .powerLed {
+    bottom: 0.9rem;
+    right: 1rem;
+    width: 4px;
+    height: 4px;
+  }
+
+  /* Scroll hint font */
+  .scrollHintText {
+    font-size: 0.62rem;
+    letter-spacing: 0.1em;
+  }
+}
