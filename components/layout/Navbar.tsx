@@ -12,6 +12,8 @@ const NAV_LINKS = [
   { label: 'Contacto',   href: '#contact'  },
 ]
 
+const LINKEDIN_URL = 'https://www.linkedin.com/in/juan-diego-paredes-g%C3%A1mez-21415338a/'
+
 /**
  * Navbar
  *
@@ -59,9 +61,10 @@ export default function Navbar() {
 
             {/* CTA separado: ir directo a contacto */}
             <a
-              href="#contact"
+              href={LINKEDIN_URL}
+              target="_blank"
+              rel="noopener noreferrer"
               className={s.ctaButton}
-              onClick={makeScrollHandler('#contact')}
             >
               Hablemos
             </a>
