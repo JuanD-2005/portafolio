@@ -90,8 +90,8 @@ export default function ActionSection() {
         {/* CTA buttons */}
         <motion.div className={s.ctaRow} variants={fadeUp}>
           <a
-            href="/cv-juan-paredes.pdf"
-            download
+            href="/Juan_Paredes_CV.pdf"
+            download="Juan_Paredes_CV.pdf"
             className={s.btnPrimary}
             aria-label="Descargar CV de Juan Paredes en PDF"
           >
