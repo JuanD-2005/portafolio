@@ -42,11 +42,10 @@ export default function HeroCRT() {
         scrollTrigger: {
           trigger:       section,
           start:         'top top',
-          end:           '+=40%',
+          end:           '+=30%',
           pin:           true,
           pinSpacing:    true,
-          scrub:         0.4,
-          anticipatePin: 1,
+          scrub:         true,
           invalidateOnRefresh: true,
         },
       })
