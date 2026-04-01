@@ -96,6 +96,7 @@
    * with GSAP's pinSpacing spacer element insertion.
    */
   overflow: clip;
+  overflow-x: hidden;
 }
 
 .heroSection::after {
@@ -489,14 +490,22 @@
 
 @media (max-width: 767px) {
 
+  .heroSection {
+    height: 100svh;
+  }
+
   /* Less wasted space around the screen inside the bezel */
   .monitor {
-    padding: 0.65rem 0.65rem 2rem;
+    width: min(92vw, 480px);
+    padding: 0.55rem 0.55rem 1.65rem;
     border-radius: 1.4rem;
   }
 
   .bezel {
-    padding: 0.3rem;
+    width: 100%;
+    margin-left: 0;
+    margin-top: 0;
+    padding: 0.28rem;
     border-radius: 0.9rem;
   }
 
@@ -511,19 +520,24 @@
    * 3.2vw ≈ 12px on 375px — readable but fits all boot sequence lines.
    */
   .terminal {
-    padding: 0.75rem 0.85rem;
-    font-size: clamp(0.7rem, 3.2vw, 0.88rem);
-    line-height: 1.5;
+    width: 100%;
+    margin-left: 0;
+    padding: 0.65rem 0.7rem;
+    font-size: clamp(0.72rem, 3.7vw, 0.92rem);
+    line-height: 1.42;
   }
 
   .terminalHeader {
-    font-size: 0.68em;
-    margin-bottom: 0.6rem;
-    letter-spacing: 0.03em;
+    font-size: 0.64em;
+    margin-bottom: 0.5rem;
+    letter-spacing: 0.02em;
   }
 
   .terminalLine {
-    min-height: 1.5em;
+    min-height: 1.42em;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    word-break: break-word;
   }
 
   .terminalLineEmpty {
@@ -539,6 +553,8 @@
   /* Stand is clipped by the shorter padding — shrink it */
   .stand {
     bottom: -1.4rem;
+    left: 50%;
+    margin-left: 0;
   }
 
   .standNeck {
