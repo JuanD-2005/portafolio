@@ -278,3 +278,101 @@
   border-color: rgba(255, 255, 255, 0.18);
   color: rgba(240, 237, 232, 0.9);
 }
+
+
+/* ══════════════════════════════════════════════════════════════════════
+   RESPONSIVE — Mobile (< 768px)
+   ══════════════════════════════════════════════════════════════════════
+
+   Problem: clamp(2.6rem, 7vw, 5.5rem) bottoms out at 2.6rem (~41px).
+   On a 375px screen with 1.5rem (24px) padding each side, the content
+   area is 327px. "Construyo experiencias" wraps awkwardly and the
+   descenders of the gradient text clip against the section edge.
+
+   Fix strategy:
+   - Tighten section lateral padding to rem instead of a fixed value
+   - Drop heading min from 2.6rem → 1.9rem so the font shrinks on narrow screens
+   - Add text-wrap: balance + overflow-wrap so long words never clip
+   - Reduce CTA button padding on very small screens
+   - Tighten stats gap
+   ══════════════════════════════════════════════════════════════════════ */
+
+@media (max-width: 767px) {
+
+  .section {
+    /* More lateral breathing room on narrow screens */
+    padding: 5rem 1.25rem 4rem;
+  }
+
+  .inner {
+    gap: 2rem;
+  }
+
+  /* Heading: tighter clamp so it scales below 2.6rem on narrow screens */
+  .headingTop {
+    font-size: clamp(1.9rem, 9vw, 2.6rem);
+    letter-spacing: -0.025em;
+    /*
+     * text-wrap: balance distributes line breaks evenly.
+     * overflow-wrap: break-word is the fallback for very long single words.
+     */
+    text-wrap: balance;
+    overflow-wrap: break-word;
+  }
+
+  .headingSub {
+    font-size: clamp(0.88rem, 3.5vw, 1rem);
+    max-width: 100%; /* don't let max-width: 520px clip on narrow screens */
+    text-wrap: balance;
+  }
+
+  /* Subheading fits without clipping */
+  .headline {
+    gap: 0.5rem;
+  }
+
+  /* Badge text slightly smaller */
+  .badge {
+    font-size: 0.72rem;
+    padding: 0.35rem 0.8rem;
+  }
+
+  /* CTA buttons: full width stacked on very small screens */
+  .ctaRow {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.75rem;
+    width: 100%;
+    max-width: 320px;
+  }
+
+  .btnPrimary,
+  .btnSecondary {
+    justify-content: center;
+    padding: 0.8rem 1.4rem;
+    font-size: 0.88rem;
+  }
+
+  /* Stats: tighten gap so they don't wrap */
+  .statsRow {
+    gap: 1.25rem;
+  }
+
+  .statValue {
+    font-size: 1.5rem;
+  }
+
+  .statDivider {
+    height: 1.8rem;
+  }
+
+  /* Tech pills: allow slightly smaller text */
+  .techRow {
+    gap: 0.35rem;
+  }
+
+  .techPill {
+    font-size: 0.7rem;
+    padding: 0.25rem 0.6rem;
+  }
+}

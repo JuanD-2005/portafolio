@@ -81,7 +81,43 @@
 }
 
 @media (max-width: 700px) {
-  .header { flex-direction: column; }
-  .subtitle { text-align: left; }
-  .grid { gap: 5rem 0; }
+  .section {
+    padding: 5rem 1.25rem 3rem;
+  }
+
+  .header {
+    flex-direction: column;
+    /*
+     * Root cause of the "title pushed to one side" bug:
+     * align-items: flex-end (desktop) pushes children to the right edge
+     * of the flex column. Resetting to flex-start aligns everything left,
+     * which is correct for a stacked single-column layout.
+     */
+    align-items: flex-start;
+    margin-bottom: 3rem;
+  }
+
+  /* Title: scale down and allow balanced wrapping */
+  .title {
+    font-size: clamp(1.75rem, 8vw, 2.2rem);
+    text-wrap: balance;
+  }
+
+  .eyebrow {
+    letter-spacing: 0.1em;
+  }
+
+  /* Subtitle: left-aligned and unconstrained width on mobile */
+  .subtitle {
+    text-align: left;
+    max-width: 100%;
+    font-size: 0.85rem;
+  }
+
+  /* Cards: single column, tighter gap */
+  .grid {
+    grid-template-columns: 1fr;
+    gap: 4rem 0;
+    justify-items: center;
+  }
 }
