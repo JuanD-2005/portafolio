@@ -1,0 +1,199 @@
+/* ─── CertificatesTeaser.module.css ──────────────────────────────────────────
+ * Section-divider trigger (line — badge — line) that expands IN-PLACE into the
+ * certificate gallery. Deliberately discreet when closed — a divider first, a
+ * CTA second.
+ * ──────────────────────────────────────────────────────────────────────────── */
+
+.section {
+  width: 100%;
+  padding: 3rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.row {
+  width: 100%;
+  max-width: 720px;
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+}
+
+.line {
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.12));
+}
+
+.row .line:last-child {
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.12), transparent);
+}
+
+.badge {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 3.25rem;
+  height: 3.25rem;
+  border-radius: 999px;
+  border: 1px solid rgba(16, 185, 129, 0.28);
+  background: rgba(16, 185, 129, 0.04);
+  color: #10b981;
+  cursor: pointer;
+  transition: transform 220ms cubic-bezier(0.23, 1, 0.32, 1),
+    border-color 200ms ease, background 200ms ease;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .badge:hover {
+    transform: scale(1.06);
+    border-color: rgba(16, 185, 129, 0.55);
+    background: rgba(16, 185, 129, 0.08);
+  }
+}
+
+.badge:active {
+  transform: scale(0.97);
+}
+
+/* Open state: firm up the ring + glow so the toggle clearly reads as active
+   (the caption and the panel's X button already carry the "close" meaning). */
+.badgeOpen {
+  border-color: rgba(16, 185, 129, 0.7);
+  background: rgba(16, 185, 129, 0.12);
+  box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.08);
+}
+
+/* Trophy icon gets a small elastic tilt when the section opens — a playful
+   confirmation that doesn't rely on color alone. */
+.badge svg {
+  transition: transform 350ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.badgeOpen svg {
+  transform: rotate(-10deg) scale(1.05);
+}
+
+.count {
+  position: absolute;
+  bottom: -2px;
+  right: -2px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.15rem;
+  height: 1.15rem;
+  padding: 0 0.25rem;
+  border-radius: 999px;
+  background: #10b981;
+  color: #050505;
+  font-family: var(--font-body), sans-serif;
+  font-size: 0.6rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+/* Count badge "pops" on open — reinforces the state change without a second
+   glance at the ring color. Scoped to no-preference so reduced-motion users
+   never see it. */
+@media (prefers-reduced-motion: no-preference) {
+  @keyframes countPop {
+    0% {
+      transform: scale(0.5);
+    }
+    60% {
+      transform: scale(1.25);
+    }
+    100% {
+      transform: scale(1);
+    }
+  }
+
+  .badgeOpen .count {
+    animation: countPop 450ms cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+}
+
+.caption {
+  display: inline-block;
+  font-family: var(--font-body), sans-serif;
+  font-size: 0.68rem;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(160, 156, 150, 0.55);
+}
+
+/* ── Expandable region (Framer Motion animates height 0 → auto) ───────────── */
+
+.panel {
+  width: 100%;
+  overflow: hidden;
+}
+
+.panelInner {
+  position: relative;
+  width: 100%;
+  max-width: 1360px;
+  max-height: 92vh;
+  margin: 1.75rem auto 0;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 1rem;
+  overflow-y: auto;
+  overflow-x: hidden;
+  background: #050505;
+  outline: none;
+}
+
+/* "Power-on" sweep — a thin line of light crossing the panel once on open.
+   Echoes the CRT language from HeroCRT without a literal curtain, which
+   would fight the in-place growth this section relies on. */
+.sweep {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #10b981, transparent);
+  transform-origin: center;
+  z-index: 25;
+  pointer-events: none;
+}
+
+/* Approximates the real gallery's height so the expand animation — which
+   measures this placeholder, not the not-yet-mounted gallery — doesn't
+   collapse to ~0 and then jump once the real content lands. The stage is now
+   aspect-anchored (height ≈ its width ÷ 1.417) instead of a fixed 460px, so
+   this is a deliberate approximation of header + stage + rail; a few px of
+   settle is expected and acceptable (no fixed height is reintroduced in the
+   gallery to "pin" it). */
+.loading {
+  width: 100%;
+  min-height: 765px;
+  background: #050505;
+}
+
+@media (max-width: 767px) {
+  .section {
+    padding: 2.25rem 1.25rem;
+  }
+
+  .row {
+    gap: 0.85rem;
+  }
+
+  .panelInner {
+    border-radius: 0.85rem;
+  }
+
+  /* Stage + readout stack vertically below lg. Both are now content/aspect
+     driven (stage min-h 340, terminal no longer a fixed 460), so the real
+     stacked height dropped — approximate it lower to avoid overshoot. */
+  .loading {
+    min-height: 900px;
+  }
+}

@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from 'next'
-import { VT323, Syne, DM_Sans } from 'next/font/google'
+import { VT323, Syne, DM_Sans, Instrument_Serif } from 'next/font/google'
 import './globals.css'
 
 /*
@@ -12,6 +12,10 @@ import './globals.css'
  *               Distinctive without being noisy.
  *
  * DM Sans     → Body text and UI copy. Clean, readable, pairs with Syne.
+ *
+ * Instrument Serif → Diploma-style display serif, used only for certificate
+ *               titles in the Trophy Room (mirrors the reference concept's
+ *               contrast between mono terminal chrome and an elegant serif).
  * ─────────────────────────────────────────────────────────────────────────────
  */
 
@@ -31,6 +35,14 @@ const syne = Syne({
 const dmSans = DM_Sans({
   subsets:  ['latin'],
   variable: '--font-body',
+  display:  'swap',
+})
+
+const instrumentSerif = Instrument_Serif({
+  weight:   '400',
+  style:    ['normal', 'italic'],
+  subsets:  ['latin'],
+  variable: '--font-serif',
   display:  'swap',
 })
 
@@ -65,7 +77,7 @@ export default function RootLayout({
   return (
     <html
       lang="es"
-      className={`${vt323.variable} ${syne.variable} ${dmSans.variable}`}
+      className={`${vt323.variable} ${syne.variable} ${dmSans.variable} ${instrumentSerif.variable}`}
     >
       <body>
         {children}
