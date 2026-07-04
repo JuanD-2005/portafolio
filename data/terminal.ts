@@ -31,6 +31,7 @@ export const speechLines: string[] = [
   "Ingeniero informático — IA & fullstack.",
   "Stack: web · móvil · cloud.",
   "Estado: disponible para contratar.",
+  "Scrollea para conocerme mejor.",
 ];
 
 // Lo que suelta cuando intentas irte hacia abajo.

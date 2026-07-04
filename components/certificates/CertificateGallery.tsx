@@ -28,6 +28,10 @@ const CATEGORY_LABEL: Record<CertificateCategory, string> = {
   "Cursos y Capacitaciones": "Cursos",
 };
 
+// El menú de filtro (pestañas TODOS/PREMIOS/CURSOS, más abajo en FilterChip)
+// usa un verde fósforo fijo #00ff41 — las cartas individuales (riel, panel
+// de lectura, luz 3D) usan el accentColor propio de cada certificado.
+
 type FilterValue = "TODOS" | CertificateCategory;
 
 // ─── Íconos ─────────────────────────────────────────────────────────────────
@@ -144,7 +148,7 @@ function FilterChip({
       aria-pressed={active}
       className={`font-mono text-[10px] tracking-[0.14em] uppercase px-3 py-1.5 rounded-full border transition-colors duration-150 ${
         active
-          ? "bg-[#10b981] border-[#10b981] text-zinc-900 font-bold"
+          ? "bg-[#00ff41] border-[#00ff41] text-zinc-900 font-bold"
           : "border-white/10 text-zinc-500 hover:text-zinc-200 hover:border-white/25"
       }`}
     >

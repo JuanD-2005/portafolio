@@ -4,6 +4,7 @@ import { useRef, useState, useCallback, useEffect } from 'react'
 import dynamic from 'next/dynamic'
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion'
 import { DEMO_CERTIFICATES } from '@/data/certificates'
+import { useReactiveFace, useHoverReactions } from '@/hooks/useReactiveFace'
 import s from './CertificatesTeaser.module.css'
 
 // Heavy client-only bundle (three.js + @react-three/fiber + HDRI). Deferred so
@@ -30,16 +31,17 @@ function TrophyIcon() {
 /**
  * CertificatesTeaser
  *
- * Section divider (line — badge — line) that expands IN-PLACE into the
+ * Trigger: a `~/logros` terminal row (same treatment as `~/curriculum` /
+ * `~/navegación` in ActionSection) that expands IN-PLACE into the
  * certificate gallery, pushing the sections below it down — no portal, no
- * overlay, no modal.
+ * overlay, no modal. The row folds its own open/close state (label text +
+ * arrow rotation) instead of a separate caption crossfade.
  *
  * Expand choreography (self-contained — no longer depends on the external
  * `archiveExpand` variant): height 0 → auto with a soft ease-out, a thin
  * "power-on" sweep line that crosses the panel on open (a nod to the CRT
  * language used in HeroCRT, now folded into this section instead of a
- * literal curtain that would fight the in-place growth), and a crossfade on
- * the caption text so the name doesn't just snap between states.
+ * literal curtain that would fight the in-place growth).
  *
  * The heavy 3D gallery mounts only once the expand animation settles
  * (`onAnimationComplete === 'visible'` flips `revealed`), so three.js init
@@ -52,6 +54,9 @@ export default function CertificatesTeaser() {
   const panelRef = useRef<HTMLDivElement>(null)
   const wasOpen = useRef(false)
   const shouldReduceMotion = useReducedMotion()
+
+  const { face, text, srText, say, reset } = useReactiveFace()
+  const hoverProps = useHoverReactions(say, reset)
 
   const toggle = useCallback(() => setOpen((v) => !v), [])
   const close = useCallback(() => setOpen(false), [])
@@ -117,44 +122,39 @@ export default function CertificatesTeaser() {
 
   return (
     <div className={s.section}>
-      <div className={s.row}>
-        <span className={s.line} aria-hidden="true" />
+      <div className={s.trophyBlock}>
+        <span className={s.pathLabel}>~/logros</span>
 
         <button
           ref={triggerRef}
           type="button"
-          className={`${s.badge} ${open ? s.badgeOpen : ''}`}
+          className={s.trophyRow}
           onClick={toggle}
           aria-expanded={open}
           aria-controls="certificates-panel"
+          {...hoverProps('( ^ o ^ )', 'mira todo lo que he certificado')}
         >
-          <TrophyIcon />
-          <span className={s.count}>{DEMO_CERTIFICATES.length}</span>
+          <span className={s.trophyRowInfo}>
+            <TrophyIcon />
+            <span className={s.trophyRowText}>
+              {open
+                ? 'Cerrar panel'
+                : `${DEMO_CERTIFICATES.length} credenciales verificadas`}
+            </span>
+          </span>
+          <span
+            className={`${s.trophyRowArrow} ${open ? s.trophyRowArrowOpen : ''}`}
+            aria-hidden="true"
+          >
+            →
+          </span>
         </button>
 
-        <span className={s.line} aria-hidden="true" />
+        <span className={s.rowHint} aria-hidden="true">
+          {text ? `${face} ${text}` : ''}
+        </span>
+        <span className="sr-only" aria-live="polite">{srText}</span>
       </div>
-
-      <AnimatePresence mode="wait" initial={false}>
-        <motion.span
-          key={open ? 'close-label' : 'open-label'}
-          className={s.caption}
-          initial={
-            shouldReduceMotion
-              ? { opacity: 0 }
-              : { opacity: 0, y: 4, filter: 'blur(2px)' }
-          }
-          animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
-          exit={
-            shouldReduceMotion
-              ? { opacity: 0 }
-              : { opacity: 0, y: -4, filter: 'blur(2px)' }
-          }
-          transition={{ duration: 0.22, ease: 'easeOut' }}
-        >
-          {open ? 'Cerrar logros y certificaciones' : 'Logros y Certificaciones'}
-        </motion.span>
-      </AnimatePresence>
 
       <AnimatePresence initial={false} onExitComplete={() => setRevealed(false)}>
         {open && (
