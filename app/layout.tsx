@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from 'next'
 import { VT323, Syne, DM_Sans, Instrument_Serif } from 'next/font/google'
+import MotionProvider from '@/components/layout/MotionProvider'
 import './globals.css'
 
 /*
@@ -14,7 +15,7 @@ import './globals.css'
  * DM Sans     → Body text and UI copy. Clean, readable, pairs with Syne.
  *
  * Instrument Serif → Diploma-style display serif, used only for certificate
- *               titles in the Trophy Room (mirrors the reference concept's
+ *               titles in Logros y Certificaciones (mirrors the reference
  *               contrast between mono terminal chrome and an elegant serif).
  * ─────────────────────────────────────────────────────────────────────────────
  */
@@ -49,14 +50,23 @@ const instrumentSerif = Instrument_Serif({
 // ─── Metadata ─────────────────────────────────────────────────────────────────
 
 export const metadata: Metadata = {
-  title:       'Juan Paredes — Full Stack Developer',
-  description: 'Full Stack Web & Mobile Developer especializado en Next.js, Flutter, Django y React. Disponible para proyectos internacionales.',
-  keywords:    ['Full Stack Developer', 'Next.js', 'Flutter', 'Django', 'React', 'Web Developer', 'Mobile Developer'],
-  authors:     [{ name: 'Juan Paredes' }],
+  title: 'Juan Paredes | Full-Stack Web & Mobile Developer',
+  description: 'Ingeniero Informático especializado en desarrollo Full-Stack con Next.js, Django y Flutter. Del esquema de base de datos al último pixel de la interfaz.',
   openGraph: {
-    title:       'Juan Paredes — Full Stack Developer',
-    description: 'Full Stack Web & Mobile Developer | Next.js · Flutter · Django · React',
-    type:        'website',
+    title: 'Juan Paredes | Full-Stack Developer',
+    description: 'Ingeniero Informático especializado en desarrollo Full-Stack. Explora mis proyectos, casos de estudio y código fuente.',
+    url: 'https://tudominio.com', // TODO: Actualizar con el dominio final en producción
+    siteName: 'Juan Paredes - Portafolio',
+    images: [
+      {
+        url: '/og-image.png', // TODO: Crear y guardar una captura del Hero en public/og-image.png
+        width: 1200,
+        height: 630,
+        alt: 'Terminal de Juan Paredes - Full-Stack Developer',
+      },
+    ],
+    locale: 'es_VE',
+    type: 'website',
   },
 }
 
@@ -80,7 +90,7 @@ export default function RootLayout({
       className={`${vt323.variable} ${syne.variable} ${dmSans.variable} ${instrumentSerif.variable}`}
     >
       <body>
-        {children}
+        <MotionProvider>{children}</MotionProvider>
       </body>
     </html>
   )

@@ -90,6 +90,20 @@ body {
   overflow-x: clip;
 }
 
+/* Global background decoration — subtle ambient glow that persists
+   across all sections on every device. `position: fixed` + `inset: 0`
+   keeps it anchored to the viewport (no scroll cut-off on mobile). */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse 60% 45% at 50% 0%, rgba(0, 255, 65, 0.04) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 40% at 80% 90%, rgba(0, 255, 65, 0.02) 0%, transparent 55%);
+}
+
 /* Thin dark scrollbar */
 ::-webkit-scrollbar {
   width: 6px;

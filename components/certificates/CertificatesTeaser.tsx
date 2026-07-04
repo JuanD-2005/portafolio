@@ -152,7 +152,7 @@ export default function CertificatesTeaser() {
           }
           transition={{ duration: 0.22, ease: 'easeOut' }}
         >
-          {open ? 'Cerrar salón de trofeos' : 'Salón de Trofeos'}
+          {open ? 'Cerrar logros y certificaciones' : 'Logros y Certificaciones'}
         </motion.span>
       </AnimatePresence>
 
@@ -172,7 +172,7 @@ export default function CertificatesTeaser() {
             <div
               ref={panelRef}
               role="region"
-              aria-label="Salón de Trofeos"
+              aria-label="Logros y Certificaciones"
               tabIndex={-1}
               className={s.panelInner}
             >

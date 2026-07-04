@@ -2,196 +2,150 @@
 
 import { useEffect, useRef, useState } from 'react'
 import { motion } from 'framer-motion'
-import { fadeUp, fadeUpSlow, staggerContainer } from '@/animations/variants'
-import { makeScrollHandler }                     from '@/lib/scrollTo'
+import { fadeUp, staggerContainer } from '@/animations/variants'
+import { makeScrollHandler } from '@/lib/scrollTo'
+import { useReactiveFace, useHoverReactions } from '@/hooks/useReactiveFace'
 import s from './ActionSection.module.css'
 
-const TECH_STACK = [
-  'Next.js', 'React', 'TypeScript', 'Flutter', 'Django', 'PHP',
-  'PostgreSQL', 'Tailwind CSS', 'Docker', 'Railway',
-]
-
 const STATS = [
-  { value: '3+',  label: 'Años exp.'  },
-  { value: '10+', label: 'Proyectos'  },
-  { value: '2',   label: 'Plataformas'},
+  { value: '3+', label: 'AÑOS', face: '( ^ v ^ )', comment: 'full-stack desde 2023' },
+  { value: '10+', label: 'PROYECTOS', face: '( ^ o ^ )', comment: 'web, móvil y apis en producción' },
+  { value: '2', label: 'PLATAFORMAS', face: '( ^ v ^ )', comment: 'web y móvil, un solo backend' },
 ]
 
-// ── Download icon (inline SVG — no external dep) ─────────────────────────────
-function DownloadIcon() {
-  return (
-    <svg
-      width="16" height="16" viewBox="0 0 16 16" fill="none"
-      xmlns="http://www.w3.org/2000/svg" aria-hidden="true"
-    >
-      <path d="M8 1v8M5 6l3 3 3-3" stroke="currentColor" strokeWidth="1.5"
-        strokeLinecap="round" strokeLinejoin="round" />
-      <path d="M2 11v2a1 1 0 001 1h10a1 1 0 001-1v-2"
-        stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-    </svg>
-  )
-}
+const TECH_STACK = [
+  { name: 'next.js', face: '( ^ v ^ )', comment: 'mi framework de cabecera' },
+  { name: 'react', face: '( ^ v ^ )', comment: 'la base de casi todo' },
+  { name: 'typescript', face: '( ^ o ^ )', comment: 'tipado estricto, cero sorpresas' },
+  { name: 'flutter', face: '( ^ v ^ )', comment: 'un solo código, dos plataformas' },
+  { name: 'django', face: '( > _ < )', comment: 'backend robusto y seguro' },
+  { name: 'postgresql', face: '( ^ _ ^ )', comment: 'mi base de datos de confianza' }
+]
 
-// ── Arrow right icon ──────────────────────────────────────────────────────────
-function ArrowIcon() {
-  return (
-    <svg
-      width="14" height="14" viewBox="0 0 14 14" fill="none"
-      xmlns="http://www.w3.org/2000/svg" aria-hidden="true"
-    >
-      <path d="M2 7h10M8 3l4 4-4 4"
-        stroke="currentColor" strokeWidth="1.5"
-        strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  )
-}
-
-/**
- * ActionSection
- *
- * The first fully modern section — appears after the GSAP CRT zoom-out.
- * Contains the main value proposition headline + CTAs + stats + tech pills.
- *
- * All entrance animations use Framer Motion whileInView so they trigger
- * cleanly even if the user arrives at this section mid-scroll (e.g. deep links).
- */
 export default function ActionSection() {
-  const [showCvMenu, setShowCvMenu] = useState(false)
-  const cvMenuRef = useRef<HTMLDivElement>(null)
+  const { face, text, srText, say, reset } = useReactiveFace()
+  const hoverProps = useHoverReactions(say, reset)
+  const [status, setStatus] = useState<'idle' | 'downloading' | 'done'>('idle')
+  const timers = useRef<ReturnType<typeof setTimeout>[]>([])
 
-  useEffect(() => {
-    if (!showCvMenu) return
+  useEffect(() => () => { timers.current.forEach(clearTimeout) }, [])
 
-    const handlePointerDown = (event: PointerEvent) => {
-      const target = event.target as Node | null
-      if (!target || !cvMenuRef.current?.contains(target)) {
-        setShowCvMenu(false)
-      }
-    }
-
-    const handleEscape = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') {
-        setShowCvMenu(false)
-      }
-    }
-
-    globalThis.addEventListener('pointerdown', handlePointerDown)
-    globalThis.addEventListener('keydown', handleEscape)
-
-    return () => {
-      globalThis.removeEventListener('pointerdown', handlePointerDown)
-      globalThis.removeEventListener('keydown', handleEscape)
-    }
-  }, [showCvMenu])
+  function handleDownload(lang: 'es' | 'en') {
+    say('( ^ o ^ )', lang === 'es' ? '¡listo! disfruta la lectura' : 'enjoy the read!', 2200)
+    setStatus('downloading')
+    timers.current.push(setTimeout(() => {
+      setStatus('done')
+      timers.current.push(setTimeout(() => setStatus('idle'), 1400))
+    }, 550))
+  }
 
   return (
-    <section id="action" aria-label="Presentación" className={s.section}>
-      <motion.div
-        className={s.inner}
-        variants={staggerContainer}
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true, margin: '-80px' }}
-      >
+    <section id="action" className={s.section}>
+      <motion.div className={s.inner} variants={staggerContainer} initial="hidden" whileInView="visible" viewport={{ once: true, margin: '-80px' }}>
+        
+        {/* 1. TOP BAR */}
+        <div className={s.topBar}>
+          <span className={s.osLabel}>JP-OS · SESIÓN INICIADA</span>
+          <div className={s.statusBadge}>
+            <span className={s.statusLabel}>usuario: </span>
+            <span className={s.statusUser}>juan paredes</span>
+            <span className={s.statusDivider}>·</span>
+            <span className={s.statusDot} />
+            Open to work · Remoto · Full-Stack
+          </div>
+        </div>
 
-        {/* Availability badge */}
-        <motion.div variants={fadeUp}>
-          <span className={s.badge}>
-            <span className={s.badgeDot} aria-hidden="true" />
-            {' '}Disponible para proyectos
-          </span>
-        </motion.div>
-
-        {/* Headline */}
-        <motion.div className={s.headline} variants={fadeUpSlow}>
-          <h1 className={s.headingTop}>
-            {'Construyo '}
-            <span className={s.accent}>experiencias</span>
-            <br />
-            digitales.
-          </h1>
-          <p className={s.headingSub}>
-            Full Stack Web &amp; Mobile Developer — de la base de datos
-            a la interfaz, en web y en móvil.
-          </p>
-        </motion.div>
-
-        {/* CTA buttons */}
-        <motion.div className={s.ctaRow} variants={fadeUp}>
-          <div ref={cvMenuRef} className={s.cvMenuWrapper}>
-            <button
-              type="button"
-              className={[s.btnPrimary, s.cvMenuButton].join(' ')}
-              aria-label="Descargar CV en Español o English"
-              aria-expanded={showCvMenu}
-              aria-controls="cv-download-menu"
-              onClick={() => setShowCvMenu(prev => !prev)}
-            >
-              <span className={s.btnIcon}>
-                <DownloadIcon />
-              </span>
-              {' '}Descargar CV
-            </button>
-
-            {showCvMenu && (
-              <div id="cv-download-menu" className={s.cvMenu} role="menu">
-                <a
-                  href="/Juan_Paredes_CV.pdf"
-                  download="Juan_Paredes_CV.pdf"
-                  role="menuitem"
-                  className={s.cvMenuItem}
-                  onClick={() => setShowCvMenu(false)}
-                >
-                  Español
-                </a>
-                <span className={s.cvMenuDivider} aria-hidden="true" />
-                <a
-                  href="/Resume JuanParedes.pdf"
-                  download="Resume JuanParedes.pdf"
-                  role="menuitem"
-                  className={s.cvMenuItem}
-                  onClick={() => setShowCvMenu(false)}
-                >
-                  English
-                </a>
-              </div>
-            )}
+        {/* 2. MAIN GRID (2 Columns) */}
+        <div className={s.mainGrid}>
+          
+          {/* Left Column: Identity & Stats */}
+          <div className={s.leftCol}>
+            <span className={s.systemTag}>{'> perfil cargado'}</span>
+            <h1 className={s.hugeName} tabIndex={0} {...hoverProps('( O _ O )', 'sí, ¡ese soy yo!')}>Juan Paredes</h1>
+            <p className={s.roles}>full-stack · ia · web · móvil</p>
+            <p className={s.bio}>Del esquema de base de datos al último pixel de la interfaz.</p>
+            
+            <div className={s.statsBlock}>
+              {STATS.map((stat) => (
+                <div key={stat.label} className={s.statItem} tabIndex={0} {...hoverProps(stat.face, stat.comment)}>
+                  <span className={s.statValue}>{stat.value}</span>
+                  <span className={s.statLabel}>{stat.label}</span>
+                </div>
+              ))}
+            </div>
           </div>
 
-          <a
-            href="#contact"
-            className={s.btnSecondary}
-            onClick={makeScrollHandler('#contact')}
-          >
-            Contactar
-            <ArrowIcon />
-          </a>
-        </motion.div>
-
-        {/* Stats */}
-        <motion.div className={s.statsRow} variants={fadeUp}>
-          {STATS.map((stat, i) => (
-            <div key={stat.label} style={{ display: 'contents' }}>
-              {i > 0 && (
-                <span className={s.statDivider} aria-hidden="true" />
-              )}
-              <div className={s.statItem}>
-                <span className={s.statValue}>{stat.value}</span>
-                <span className={s.statLabel}>{stat.label}</span>
+          {/* Right Column: Actions (CV & Nav) */}
+          <div className={s.rightCol}>
+            
+            <div className={s.actionBlock}>
+              <span className={s.pathLabel}>~/curriculum</span>
+              <div className={s.cvCards}>
+                <a href="/Juan_Paredes_CV.pdf" download="Juan_Paredes_CV.pdf" onClick={() => handleDownload('es')} className={s.cvCard} {...hoverProps('( ^ v ^ )', 'versión en español')}>
+                  <div className={s.cvCardInfo}>
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M4 2v12a1 1 0 001 1h6a1 1 0 001-1V5L8 2H5a1 1 0 00-1 1z" stroke="currentColor" strokeWidth="1.5"/></svg>
+                    <div>
+                      <p className={s.cvCardTitle}>cv_es.pdf</p>
+                      <p className={s.cvCardMeta}>español · 214 KB</p>
+                    </div>
+                  </div>
+                  <div className={s.downloadBtn}><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1v9M4 7l3 3 3-3M2 12h10" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg></div>
+                </a>
+                
+                <a href="/Resume JuanParedes.pdf" download="Resume JuanParedes.pdf" onClick={() => handleDownload('en')} className={s.cvCard} {...hoverProps('( ^ v ^ )', 'english version')}>
+                  <div className={s.cvCardInfo}>
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M4 2v12a1 1 0 001 1h6a1 1 0 001-1V5L8 2H5a1 1 0 00-1 1z" stroke="currentColor" strokeWidth="1.5"/></svg>
+                    <div>
+                      <p className={s.cvCardTitle}>cv_en.pdf</p>
+                      <p className={s.cvCardMeta}>english · 209 KB</p>
+                    </div>
+                  </div>
+                  <div className={s.downloadBtn}><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1v9M4 7l3 3 3-3M2 12h10" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg></div>
+                </a>
               </div>
             </div>
-          ))}
-        </motion.div>
 
-        {/* Tech pills */}
-        <motion.div className={s.techRow} variants={fadeUp}>
-          {TECH_STACK.map((tech) => (
-            <span key={tech} className={s.techPill}>
-              {tech}
-            </span>
-          ))}
-        </motion.div>
+            <div className={s.actionBlock}>
+              <span className={s.pathLabel}>~/navegación</span>
+              <div className={s.navButtons}>
+                <a href="https://linkedin.com/in/tu-usuario" target="_blank" rel="noopener noreferrer" className={s.navBtn} {...hoverProps('( ^ _ ^ )', 'conecta conmigo en linkedin')}>
+                  <span className={s.navBtnArrow}>{'>'}</span> linkedin
+                </a>
+                <a href="https://github.com/tu-usuario" target="_blank" rel="noopener noreferrer" className={s.navBtn} {...hoverProps('( 0 _ 0 )', 'revisa mi código fuente')}>
+                  <span className={s.navBtnArrow}>{'>'}</span> github
+                </a>
+              </div>
+            </div>
 
+          </div>
+        </div>
+
+        {/* 3. BOTTOM CLI PANEL */}
+        <div className={s.bottomCli}>
+          <div className={s.cliBox}>
+            <div className={s.cliLeft}>
+              <span className={s.cliFace}>{face}</span>
+              <span className={s.cliText}>{text || 'esperando input...'}</span>
+              <span className={s.cliCursor}>█</span>
+            </div>
+            <span className={s.cliRight}>JP-OS · asistente</span>
+          </div>
+          <div className={s.modulesList}>
+            <span className={s.modulesTag} tabIndex={0} {...hoverProps('( ^ _ ^ )', 'mi arsenal de desarrollo')}>MÓDULOS</span>
+            <div className={s.modulesTech}>
+              {TECH_STACK.map((tech, i) => (
+                <span key={tech.name} style={{ display: 'inline-flex', gap: '0.5rem' }}>
+                  <span className={s.techItem} tabIndex={0} {...hoverProps(tech.face, tech.comment)}>
+                    {tech.name}
+                  </span>
+                  {i < TECH_STACK.length - 1 && <span className={s.techSeparator}>·</span>}
+                </span>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        <span className="sr-only" aria-live="polite">{srText}</span>
       </motion.div>
     </section>
   )
