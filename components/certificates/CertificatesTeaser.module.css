@@ -1,131 +1,101 @@
 /* ─── CertificatesTeaser.module.css ──────────────────────────────────────────
- * Section-divider trigger (line — badge — line) that expands IN-PLACE into the
- * certificate gallery. Deliberately discreet when closed — a divider first, a
- * CTA second.
+ * Terminal-row trigger (~/logros) that expands IN-PLACE into the certificate
+ * gallery — same visual language as ActionSection's ~/curriculum/~/navegación
+ * rows instead of a standalone app-icon badge.
  * ──────────────────────────────────────────────────────────────────────────── */
 
 .section {
   width: 100%;
-  padding: 3rem 1.5rem;
+  /* Top padding trimmed so the gap to ActionSection's last block (bottomCli)
+     matches its own internal sibling gap (mainGrid→bottomCli = 6rem/96px),
+     instead of stacking on top of ActionSection's own 6rem bottom padding.
+     Bottom padding (spacing to ProjectsSection) is untouched. */
+  padding: 0 1.5rem 3rem;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 0.75rem;
 }
 
-.row {
+/* ── Trigger row — terminal-row treatment, matches ActionSection's
+   ~/curriculum · ~/navegación blocks (same border/bg/accent values as
+   .cvCard there) instead of the old app-icon circle+badge. ────────────── */
+
+.trophyBlock {
   width: 100%;
   max-width: 720px;
   display: flex;
-  align-items: center;
-  gap: 1.25rem;
+  flex-direction: column;
+  gap: 0.5rem;
+  text-align: left;
 }
 
-.line {
-  flex: 1;
-  height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.12));
+.pathLabel {
+  font-family: var(--font-terminal), monospace;
+  font-size: 0.8rem;
+  color: #585450;
 }
 
-.row .line:last-child {
-  background: linear-gradient(90deg, rgba(255, 255, 255, 0.12), transparent);
-}
-
-.badge {
-  position: relative;
+.trophyRow {
   display: flex;
   align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  width: 3.25rem;
-  height: 3.25rem;
-  border-radius: 999px;
-  border: 1px solid rgba(16, 185, 129, 0.28);
-  background: rgba(16, 185, 129, 0.04);
-  color: #10b981;
+  justify-content: space-between;
+  gap: 1rem;
+  width: 100%;
+  padding: 1rem 1.2rem;
+  border-radius: 8px;
+  border: 1px solid #1a1a1a;
+  background: #0a0a0a;
   cursor: pointer;
-  transition: transform 220ms cubic-bezier(0.23, 1, 0.32, 1),
-    border-color 200ms ease, background 200ms ease;
+  transition: border-color 0.2s, background 0.2s;
 }
 
-@media (hover: hover) and (pointer: fine) {
-  .badge:hover {
-    transform: scale(1.06);
-    border-color: rgba(16, 185, 129, 0.55);
-    background: rgba(16, 185, 129, 0.08);
-  }
+.trophyRow:hover,
+.trophyRow:focus-visible {
+  border-color: rgba(0, 255, 65, 0.4);
+  background: #0f1411;
 }
 
-.badge:active {
-  transform: scale(0.97);
-}
-
-/* Open state: firm up the ring + glow so the toggle clearly reads as active
-   (the caption and the panel's X button already carry the "close" meaning). */
-.badgeOpen {
-  border-color: rgba(16, 185, 129, 0.7);
-  background: rgba(16, 185, 129, 0.12);
-  box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.08);
-}
-
-/* Trophy icon gets a small elastic tilt when the section opens — a playful
-   confirmation that doesn't rely on color alone. */
-.badge svg {
-  transition: transform 350ms cubic-bezier(0.34, 1.56, 0.64, 1);
-}
-
-.badgeOpen svg {
-  transform: rotate(-10deg) scale(1.05);
-}
-
-.count {
-  position: absolute;
-  bottom: -2px;
-  right: -2px;
+.trophyRowInfo {
   display: flex;
   align-items: center;
-  justify-content: center;
-  min-width: 1.15rem;
-  height: 1.15rem;
-  padding: 0 0.25rem;
-  border-radius: 999px;
-  background: #10b981;
-  color: #050505;
-  font-family: var(--font-body), sans-serif;
-  font-size: 0.6rem;
-  font-weight: 700;
-  line-height: 1;
+  gap: 1rem;
+  color: #00ff41;
 }
 
-/* Count badge "pops" on open — reinforces the state change without a second
-   glance at the ring color. Scoped to no-preference so reduced-motion users
-   never see it. */
-@media (prefers-reduced-motion: no-preference) {
-  @keyframes countPop {
-    0% {
-      transform: scale(0.5);
-    }
-    60% {
-      transform: scale(1.25);
-    }
-    100% {
-      transform: scale(1);
-    }
-  }
-
-  .badgeOpen .count {
-    animation: countPop 450ms cubic-bezier(0.34, 1.56, 0.64, 1);
-  }
+.trophyRowText {
+  font-family: var(--font-terminal), monospace;
+  font-size: 1rem;
 }
 
-.caption {
+.trophyRowArrow {
   display: inline-block;
-  font-family: var(--font-body), sans-serif;
-  font-size: 0.68rem;
-  font-weight: 500;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: rgba(160, 156, 150, 0.55);
+  color: #585450;
+  font-size: 1.1rem;
+  line-height: 1;
+  transition: color 0.2s, transform 0.2s;
+  transform: rotate(var(--arrow-rotate, 0deg)) translateX(var(--arrow-shift, 0px));
+}
+
+.trophyRow:hover .trophyRowArrow,
+.trophyRow:focus-visible .trophyRowArrow {
+  color: #00ff41;
+  --arrow-shift: 3px;
+}
+
+.trophyRowArrowOpen {
+  --arrow-rotate: 90deg;
+}
+
+/* Reserves its line height at all times so the hint appearing/disappearing
+   never shifts the row below it. */
+.rowHint {
+  display: block;
+  min-height: 1.1em;
+  font-family: var(--font-terminal), monospace;
+  font-size: 0.75rem;
+  color: #00ff41;
+  opacity: 0.8;
 }
 
 /* ── Expandable region (Framer Motion animates height 0 → auto) ───────────── */
@@ -179,11 +149,10 @@
 
 @media (max-width: 767px) {
   .section {
-    padding: 2.25rem 1.25rem;
-  }
-
-  .row {
-    gap: 0.85rem;
+    /* Top trimmed same as desktop (see base .section rule) — ActionSection's
+       own bottom padding doesn't change at this breakpoint either, so the
+       96px target holds. Bottom padding unchanged. */
+    padding: 0 1.25rem 2.25rem;
   }
 
   .panelInner {
