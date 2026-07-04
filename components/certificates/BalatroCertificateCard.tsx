@@ -2,8 +2,8 @@
 
 import { useRef, useState, useCallback, useEffect } from "react";
 import { useFrame } from "@react-three/fiber";
-import { motion } from "framer-motion-3d";
-import { useSpring, useMotionValue, useTransform } from "framer-motion";
+import { useGSAP } from "@gsap/react";
+import gsap from "gsap";
 import * as THREE from "three";
 import { CertificateData } from "../../data/certificates";
 import { useCertificateTextures } from "./certificateTexture";
@@ -111,89 +111,132 @@ export function BalatroCertificateCard({
   // ── Flip ─────────────────────────────────────────────────────────────────
   const [flipped, setFlipped] = useState(false);
 
-  const flipAngle = useMotionValue(0);
-  const flipSpring = useSpring(flipAngle, {
-    stiffness: 200,
-    damping: 22,
-    mass: 1.2,
-  });
+  // El THREE.Group real — GSAP escribe directo sobre sus props (posición,
+  // rotación, escala) en vez de pasar por un puente de MotionValues.
+  const groupRef = useRef<THREE.Group>(null!);
+
+  // Estado "lógico" de rotación: flip (click) + tilt (parallax) se combinan
+  // aquí, igual que el useTransform original (flipSpring.get() + tiltY.get()).
+  // Ya están en RADIANES — confirmado en el source de framer-motion-3d:
+  // rotateX/Y escriben sin conversión en object3D.rotation (Math.PI = 180°).
+  const rotState = useRef({ flip: 0, tiltX: 0, tiltY: 0 });
+
+  const applyRotation = useCallback(() => {
+    if (!groupRef.current) return;
+    groupRef.current.rotation.x = rotState.current.tiltX;
+    groupRef.current.rotation.y = rotState.current.flip + rotState.current.tiltY;
+  }, []);
+
+  // contextSafe ata cualquier tween creado dentro de los handlers de puntero/
+  // click al mismo contexto de groupRef — GSAP los mata solo al desmontar,
+  // igual que useGSAP ya hace con los timelines de HeroCRT.tsx.
+  const { contextSafe } = useGSAP({ scope: groupRef });
 
   const handleClick = useCallback(() => {
-    setFlipped((prev) => {
-      const next = !prev;
-      flipAngle.set(next ? Math.PI : 0);
-      return next;
-    });
-  }, [flipAngle]);
-
-  // ── Tilt / parallax ───────────────────────────────────────────────────────
-  const rawTiltX = useMotionValue(0);
-  const rawTiltY = useMotionValue(0);
-
-  const tiltX = useSpring(rawTiltX, { stiffness: 120, damping: 18, mass: 0.8 });
-  const tiltY = useSpring(rawTiltY, { stiffness: 120, damping: 18, mass: 0.8 });
-
-  // Framer Motion v11 derived value syntax — no array form needed.
-  const combinedRotY = useTransform(() => flipSpring.get() + tiltY.get());
-
-  // ── Hover scale ───────────────────────────────────────────────────────────
-  const scaleSpring = useSpring(scale, {
-    stiffness: 300,
-    damping: 20,
-    mass: 0.9,
-  });
+    contextSafe(() => {
+      setFlipped((prev) => {
+        const next = !prev;
+        gsap.to(rotState.current, {
+          flip: next ? Math.PI : 0,
+          duration: 0.6,
+          ease: "back.out(1.2)",
+          overwrite: true,
+          onUpdate: applyRotation,
+        });
+        return next;
+      });
+    })();
+  }, [contextSafe, applyRotation]);
 
   // ── Breathe / float ───────────────────────────────────────────────────────
-  const floatY = useMotionValue(position[1]);
-
+  // Nunca pasó por framer-motion-3d realmente (useFrame es puro R3F) — solo
+  // cambia el destino de la escritura: del MotionValue al ref real.
   useFrame(({ clock }) => {
-    floatY.set(
-      flipped
-        ? position[1]
-        : position[1] + Math.sin(clock.getElapsedTime() * 0.9) * 0.04,
-    );
+    if (!groupRef.current) return;
+    groupRef.current.position.y = flipped
+      ? position[1]
+      : position[1] + Math.sin(clock.getElapsedTime() * 0.9) * 0.04;
   });
 
   // ── Pointer handlers ──────────────────────────────────────────────────────
+  // useCallback envuelve una función inline normal (no contextSafe(...)
+  // directo como primer argumento — las reglas de hooks del proyecto lo
+  // exigen) que a su vez invoca el wrapper de contextSafe: así los refs
+  // (groupRef, rotState) que se leen adentro cuentan como acceso fuera de
+  // render, no durante render.
   const handlePointerEnter = useCallback(() => {
-    scaleSpring.set(scale * 1.07);
-  }, [scale, scaleSpring]);
+    contextSafe(() => {
+      document.body.style.cursor = "pointer";
+      if (!groupRef.current) return;
+      gsap.to(groupRef.current.scale, {
+        x: scale * 1.07,
+        y: scale * 1.07,
+        z: scale * 1.07,
+        duration: 0.3,
+        ease: "back.out(1.7)",
+        overwrite: true,
+      });
+    })();
+  }, [contextSafe, scale]);
 
   const handlePointerLeave = useCallback(() => {
-    scaleSpring.set(scale);
-    rawTiltX.set(0);
-    rawTiltY.set(0);
-  }, [scale, scaleSpring, rawTiltX, rawTiltY]);
+    contextSafe(() => {
+      document.body.style.cursor = "auto";
+      if (groupRef.current) {
+        gsap.to(groupRef.current.scale, {
+          x: scale,
+          y: scale,
+          z: scale,
+          duration: 0.3,
+          ease: "back.out(1.7)",
+          overwrite: true,
+        });
+      }
+      gsap.to(rotState.current, {
+        tiltX: 0,
+        tiltY: 0,
+        duration: 0.35,
+        ease: "power3.out",
+        overwrite: true,
+        onUpdate: applyRotation,
+      });
+    })();
+  }, [contextSafe, scale, applyRotation]);
 
   const handlePointerMove = useCallback(
     (e: { point: THREE.Vector3 }) => {
-      if (flipped) return;
-      const lx = THREE.MathUtils.clamp(
-        (e.point.x - position[0]) / (CARD_W * 0.5 * scale),
-        -1,
-        1,
-      );
-      const ly = THREE.MathUtils.clamp(
-        (e.point.y - position[1]) / (CARD_H * 0.5 * scale),
-        -1,
-        1,
-      );
-      rawTiltX.set(-ly * 0.3);
-      rawTiltY.set(lx * 0.3);
+      contextSafe(() => {
+        if (flipped) return;
+        const lx = THREE.MathUtils.clamp(
+          (e.point.x - position[0]) / (CARD_W * 0.5 * scale),
+          -1,
+          1,
+        );
+        const ly = THREE.MathUtils.clamp(
+          (e.point.y - position[1]) / (CARD_H * 0.5 * scale),
+          -1,
+          1,
+        );
+        gsap.to(rotState.current, {
+          tiltX: -ly * 0.3,
+          tiltY: lx * 0.3,
+          duration: 0.35,
+          ease: "power3.out",
+          overwrite: true,
+          onUpdate: applyRotation,
+        });
+      })();
     },
-    [flipped, position, scale, rawTiltX, rawTiltY, CARD_W, CARD_H],
+    [contextSafe, flipped, position, scale, CARD_W, CARD_H, applyRotation],
   );
 
   const accent = data.accentColor ?? "#22c55e";
 
   return (
-    <motion.group
-      position-x={position[0]}
-      position-y={floatY}
-      position-z={position[2]}
-      rotateX={tiltX}
-      rotateY={combinedRotY}
-      scale={scaleSpring}
+    <group
+      ref={groupRef}
+      position={[position[0], position[1], position[2]]}
+      scale={scale}
     >
       {/* ── Bulletproof hit surface ──────────────────────────────────────── */}
       {/* colorWrite + depthWrite = false → invisible to camera AND depth     */}
@@ -279,6 +322,6 @@ export function BalatroCertificateCard({
 
       {/* ── Holographic foil (front only, fades on flip) ─────────────────── */}
       <HolographicOverlay flipped={flipped} accentColor={accent} w={CARD_W} h={CARD_H} />
-    </motion.group>
+    </group>
   );
 }
