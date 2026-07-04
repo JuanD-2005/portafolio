@@ -1,436 +1,100 @@
-/* ─── ActionSection.module.css ───────────────────────────────────────────────
- * The bridge section between CRT hero and the projects grid.
- * Bento-style layout: headline + two CTAs + stats chips + availability badge.
- * ──────────────────────────────────────────────────────────────────────────── */
-
-/* ── Keyframes ───────────────────────────────────────────────────────────── */
-
-@keyframes badge-pulse {
-  0%,  100% { box-shadow: 0 0 0 0 rgba(52, 211, 153, 0.35); }
-  50%        { box-shadow: 0 0 0 6px rgba(52, 211, 153, 0); }
-}
-
-/* ── Section wrapper ─────────────────────────────────────────────────────── */
-
 .section {
-  position: relative;
-  width: 100%;
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 7rem 1.5rem 6rem;
-  background: #080808;
-  overflow: hidden;
+  width: 100%; min-height: 100vh;
+  display: flex; align-items: center; justify-content: center;
+  padding: 8rem 1.5rem 6rem;
+  background: #050505;
+  background-image: radial-gradient(circle at 50% 0%, rgba(0, 255, 65, 0.05) 0%, transparent 60%);
 }
-
-/* Subtle noise texture via a repeating gradient (no external image) */
-.section::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background-image:
-    radial-gradient(circle at 25% 30%, rgba(99, 102, 241, 0.045) 0%, transparent 55%),
-    radial-gradient(circle at 75% 70%, rgba(20, 184, 166, 0.035) 0%, transparent 55%);
-  pointer-events: none;
-}
-
-/* Top gradient fade from the CRT section */
-.section::after {
-  content: '';
-  position: absolute;
-  top: 0; left: 0; right: 0;
-  height: 8rem;
-  background: linear-gradient(to bottom, #020202, transparent);
-  pointer-events: none;
-}
-
-/* ── Inner container ─────────────────────────────────────────────────────── */
 
 .inner {
-  position: relative;
-  width: 100%;
-  max-width: 900px;
-  z-index: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  gap: 3rem;
+  width: 100%; max-width: 900px;
+  display: flex; flex-direction: column; gap: 4rem;
 }
 
-/* ── Availability badge ──────────────────────────────────────────────────── */
-
-.badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.4rem 1rem;
-  border-radius: 999px;
-  border: 1px solid rgba(52, 211, 153, 0.25);
-  background: rgba(52, 211, 153, 0.06);
-  font-family: var(--font-body), sans-serif;
-  font-size: 0.78rem;
-  font-weight: 500;
-  letter-spacing: 0.04em;
-  color: #34d399;
+/* Top Bar */
+.topBar {
+  display: flex; justify-content: space-between; align-items: center;
+  font-family: var(--font-terminal), monospace; font-size: 0.75rem; letter-spacing: 0.05em;
+  border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 1rem;
 }
+.osLabel { color: #585450; }
+.statusBadge { display: flex; align-items: center; gap: 0.5rem; color: #00ff41; }
+.statusLabel { color: #585450; }
+.statusUser { color: #a09c96; }
+.statusDivider { color: #242424; margin: 0 0.2rem; }
+.statusDot { width: 6px; height: 6px; background: #00ff41; border-radius: 50%; box-shadow: 0 0 8px #00ff41; animation: pulse 2s infinite; }
 
-.badgeDot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: #34d399;
-  animation: badge-pulse 2s ease-in-out infinite;
+/* Main Grid */
+.mainGrid { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: start; }
+
+/* Left Column */
+.leftCol { display: flex; flex-direction: column; gap: 1rem; }
+.systemTag { font-family: var(--font-terminal), monospace; font-size: 0.9rem; color: #00ff41; }
+.hugeName { font-family: var(--font-heading), sans-serif; font-size: clamp(3rem, 6vw, 4.5rem); line-height: 1; color: #f0ede8; outline: none; cursor: crosshair; }
+.roles { font-family: var(--font-terminal), monospace; font-size: 0.9rem; color: #00ff41; word-spacing: 0.2rem; }
+.bio { font-family: var(--font-body), sans-serif; font-size: 1rem; color: #a09c96; line-height: 1.6; max-width: 90%; }
+
+/* Stats Block */
+.statsBlock { display: flex; gap: 3rem; margin-top: 2rem; padding-top: 2rem; border-top: 1px solid rgba(255,255,255,0.05); }
+.statItem { display: flex; flex-direction: column; outline: none; }
+.statValue { font-family: var(--font-heading), sans-serif; font-size: 3rem; line-height: 1; color: #f0ede8; transition: color 0.2s; }
+.statLabel { font-family: var(--font-terminal), monospace; font-size: 0.7rem; color: #585450; letter-spacing: 0.1em; margin-top: 0.5rem; }
+.statItem:hover .statValue { color: #00ff41; }
+
+/* Right Column */
+.rightCol { display: flex; flex-direction: column; gap: 3rem; }
+.actionBlock { display: flex; flex-direction: column; gap: 1rem; }
+.pathLabel { font-family: var(--font-terminal), monospace; font-size: 0.8rem; color: #585450; }
+
+/* CV Cards */
+.cvCards { display: flex; flex-direction: column; gap: 0.8rem; }
+.cvCard {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 1rem 1.2rem; border-radius: 8px; border: 1px solid #1a1a1a;
+  background: #0a0a0a; text-decoration: none; transition: all 0.2s;
 }
+.cvCard:hover { border-color: rgba(0,255,65,0.4); background: #0f1411; }
+.cvCardInfo { display: flex; items: center; gap: 1rem; color: #00ff41; }
+.cvCardTitle { font-family: var(--font-terminal), monospace; font-size: 1rem; color: #f0ede8; line-height: 1.2; }
+.cvCardMeta { font-family: var(--font-body), sans-serif; font-size: 0.75rem; color: #585450; margin-top: 0.2rem; }
+.downloadBtn { color: #585450; transition: color 0.2s; }
+.cvCard:hover .downloadBtn { color: #00ff41; }
 
-/* ── Headline block ──────────────────────────────────────────────────────── */
-
-.headline {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.6rem;
+/* Nav Buttons */
+.navButtons { display: flex; flex-direction: column; gap: 0.5rem; }
+.navBtn {
+  display: inline-flex; align-items: center; gap: 0.8rem;
+  padding: 0.8rem 1.2rem; border-radius: 6px; border: 1px solid #1a1a1a;
+  background: transparent; font-family: var(--font-terminal), monospace;
+  font-size: 0.95rem; color: #00ff41; text-decoration: none; transition: all 0.2s;
 }
+.navBtnArrow { color: #585450; transition: color 0.2s; }
+.navBtn:hover { border-color: #00ff41; background: rgba(0,255,65,0.05); }
+.navBtn:hover .navBtnArrow { color: #00ff41; }
 
-.headingTop {
-  font-family:    var(--font-heading), sans-serif;
-  font-size:      clamp(2.6rem, 7vw, 5.5rem);
-  font-weight:    700;
-  line-height:    1.0;
-  letter-spacing: -0.03em;
-  color:          #f0ede8;
+/* CLI Panel */
+.bottomCli { display: flex; flex-direction: column; gap: 0.8rem; margin-top: 2rem; }
+.cliBox {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 1.2rem 1.5rem; border: 1px solid #1a1a1a; border-radius: 8px;
+  background: #0a0a0a; font-family: var(--font-terminal), monospace;
 }
+.cliLeft { display: flex; align-items: center; gap: 1rem; color: #00ff41; font-size: 1rem; }
+.cliCursor { animation: blink 1s step-end infinite; }
+.cliRight { font-size: 0.75rem; color: #585450; }
+.modulesList { display: flex; align-items: center; gap: 1rem; font-family: var(--font-terminal), monospace; font-size: 0.75rem; padding-left: 0.5rem; flex-wrap: wrap; }
+.modulesTag { color: #00ff41; outline: none; cursor: crosshair; }
+.modulesTech { display: flex; flex-wrap: wrap; gap: 0.5rem; color: #585450; }
+.techItem { outline: none; cursor: crosshair; transition: color 0.2s; }
+.techItem:hover, .techItem:focus-visible { color: #00ff41; }
+.techSeparator { color: #242424; user-select: none; }
 
-/* Accent word highlight */
-.accent {
-  background: linear-gradient(135deg, #e8ff47 0%, #a8ef20 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
+@keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
+@keyframes blink { 0%,100% { opacity: 1; } 50% { opacity: 0; } }
 
-.headingSub {
-  font-family:  var(--font-body), sans-serif;
-  font-size:    clamp(1rem, 2vw, 1.2rem);
-  font-weight:  400;
-  color:        rgba(160, 156, 150, 0.9);
-  letter-spacing: 0.01em;
-  max-width: 520px;
-}
-
-/* ── CTA row ─────────────────────────────────────────────────────────────── */
-
-.ctaRow {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 1rem;
-  flex-wrap: wrap;
-}
-
-/* Primary button — the CV download */
-.btnPrimary {
-  position: relative;
-  display: flex;
-  align-items: center;
-  gap: 0.6rem;
-  padding: 0.85rem 1.8rem;
-  border-radius: 999px;
-  border: none;
-  background: #f0ede8;
-  color: #0a0a0a;
-  font-family: var(--font-body), sans-serif;
-  font-size: 0.92rem;
-  font-weight: 600;
-  letter-spacing: -0.01em;
-  cursor: pointer;
-  text-decoration: none;
-  overflow: hidden;
-  transition: transform 0.15s ease, box-shadow 0.2s ease;
-  box-shadow: 0 2px 16px rgba(240, 237, 232, 0.15);
-}
-
-.btnPrimary:hover {
-  transform: translateY(-2px) scale(1.02);
-  box-shadow: 0 6px 28px rgba(240, 237, 232, 0.22);
-}
-
-.btnPrimary:active {
-  transform: translateY(0) scale(0.99);
-}
-
-/* Shimmer sweep on hover */
-.btnPrimary::after {
-  content: '';
-  position: absolute;
-  top: 0; left: -100%;
-  width: 60%;
-  height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.35), transparent);
-  transition: left 0.4s ease;
-  pointer-events: none;
-}
-
-.btnPrimary:hover::after {
-  left: 150%;
-}
-
-/* Icon wrapper inside primary button — rotates 15° on hover */
-.btnIcon {
-  display: flex;
-  transition: transform 0.3s ease;
-}
-
-.btnPrimary:hover .btnIcon {
-  transform: rotate(15deg) translateY(1px);
-}
-
-/* CV dropdown menu wrapper */
-.cvMenuWrapper {
-  position: relative;
-}
-
-.cvMenuButton {
-  width: 100%;
-}
-
-.cvMenu {
-  position: absolute;
-  top: calc(100% + 0.55rem);
-  left: 50%;
-  transform: translateX(-50%);
-  min-width: 170px;
-  padding: 0.45rem;
-  border-radius: 0.7rem;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  background: rgba(18, 18, 18, 0.96);
-  backdrop-filter: blur(8px);
-  display: flex;
-  flex-direction: column;
-  gap: 0.35rem;
-  z-index: 40;
-  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.35);
-}
-
-.cvMenuItem {
-  display: block;
-  padding: 0.45rem 0.65rem;
-  border-radius: 0.45rem;
-  text-align: center;
-  text-decoration: none;
-  font-family: var(--font-body), sans-serif;
-  font-size: 0.86rem;
-  font-weight: 500;
-  color: #f0ede8;
-  transition: background 0.15s ease, color 0.15s ease;
-}
-
-.cvMenuItem:hover {
-  background: rgba(240, 237, 232, 0.09);
-  color: #f0ede8;
-}
-
-.cvMenuDivider {
-  height: 1px;
-  background: rgba(255, 255, 255, 0.12);
-}
-
-/* Secondary ghost button */
-.btnSecondary {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.85rem 1.8rem;
-  border-radius: 999px;
-  border: 1px solid rgba(240, 237, 232, 0.15);
-  background: transparent;
-  color: rgba(240, 237, 232, 0.7);
-  font-family: var(--font-body), sans-serif;
-  font-size: 0.92rem;
-  font-weight: 500;
-  cursor: pointer;
-  text-decoration: none;
-  transition: border-color 0.2s ease, color 0.2s ease, background 0.2s ease;
-}
-
-.btnSecondary:hover {
-  border-color: rgba(240, 237, 232, 0.35);
-  color: rgba(240, 237, 232, 0.95);
-  background: rgba(240, 237, 232, 0.05);
-}
-
-/* ── Stats row ───────────────────────────────────────────────────────────── */
-
-.statsRow {
-  display: flex;
-  align-items: center;
-  gap: 2rem;
-  flex-wrap: wrap;
-  justify-content: center;
-}
-
-.statItem {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.2rem;
-}
-
-.statValue {
-  font-family: var(--font-heading), sans-serif;
-  font-size: 1.8rem;
-  font-weight: 700;
-  line-height: 1;
-  letter-spacing: -0.03em;
-  color: #f0ede8;
-}
-
-.statLabel {
-  font-family: var(--font-body), sans-serif;
-  font-size: 0.72rem;
-  font-weight: 400;
-  color: rgba(160, 156, 150, 0.65);
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-}
-
-.statDivider {
-  width: 1px;
-  height: 2.5rem;
-  background: rgba(255, 255, 255, 0.08);
-}
-
-/* ── Tech pills row ──────────────────────────────────────────────────────── */
-
-.techRow {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  flex-wrap: wrap;
-  justify-content: center;
-}
-
-.techPill {
-  padding: 0.3rem 0.8rem;
-  border-radius: 999px;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  background: rgba(255, 255, 255, 0.04);
-  font-family: var(--font-body), sans-serif;
-  font-size: 0.75rem;
-  font-weight: 500;
-  color: rgba(160, 156, 150, 0.85);
-  letter-spacing: 0.02em;
-  transition: border-color 0.2s, color 0.2s;
-}
-
-.techPill:hover {
-  border-color: rgba(255, 255, 255, 0.18);
-  color: rgba(240, 237, 232, 0.9);
-}
-
-
-/* ══════════════════════════════════════════════════════════════════════
-   RESPONSIVE — Mobile (< 768px)
-   ══════════════════════════════════════════════════════════════════════
-
-   Problem: clamp(2.6rem, 7vw, 5.5rem) bottoms out at 2.6rem (~41px).
-   On a 375px screen with 1.5rem (24px) padding each side, the content
-   area is 327px. "Construyo experiencias" wraps awkwardly and the
-   descenders of the gradient text clip against the section edge.
-
-   Fix strategy:
-   - Tighten section lateral padding to rem instead of a fixed value
-   - Drop heading min from 2.6rem → 1.9rem so the font shrinks on narrow screens
-   - Add text-wrap: balance + overflow-wrap so long words never clip
-   - Reduce CTA button padding on very small screens
-   - Tighten stats gap
-   ══════════════════════════════════════════════════════════════════════ */
-
-@media (max-width: 767px) {
-
-  .section {
-    /* More lateral breathing room on narrow screens */
-    padding: 5rem 1.25rem 4rem;
-  }
-
-  .inner {
-    gap: 2rem;
-  }
-
-  /* Heading: tighter clamp so it scales below 2.6rem on narrow screens */
-  .headingTop {
-    font-size: clamp(1.9rem, 9vw, 2.6rem);
-    letter-spacing: -0.025em;
-    /*
-     * text-wrap: balance distributes line breaks evenly.
-     * overflow-wrap: break-word is the fallback for very long single words.
-     */
-    text-wrap: balance;
-    overflow-wrap: break-word;
-  }
-
-  .headingSub {
-    font-size: clamp(0.88rem, 3.5vw, 1rem);
-    max-width: 100%; /* don't let max-width: 520px clip on narrow screens */
-    text-wrap: balance;
-  }
-
-  /* Subheading fits without clipping */
-  .headline {
-    gap: 0.5rem;
-  }
-
-  /* Badge text slightly smaller */
-  .badge {
-    font-size: 0.72rem;
-    padding: 0.35rem 0.8rem;
-  }
-
-  /* CTA buttons: full width stacked on very small screens */
-  .ctaRow {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 0.75rem;
-    width: 100%;
-    max-width: 320px;
-  }
-
-  .btnPrimary,
-  .btnSecondary {
-    justify-content: center;
-    padding: 0.8rem 1.4rem;
-    font-size: 0.88rem;
-  }
-
-  .cvMenuWrapper {
-    width: 100%;
-  }
-
-  .cvMenu {
-    min-width: 100%;
-  }
-
-  /* Stats: tighten gap so they don't wrap */
-  .statsRow {
-    gap: 1.25rem;
-  }
-
-  .statValue {
-    font-size: 1.5rem;
-  }
-
-  .statDivider {
-    height: 1.8rem;
-  }
-
-  /* Tech pills: allow slightly smaller text */
-  .techRow {
-    gap: 0.35rem;
-  }
-
-  .techPill {
-    font-size: 0.7rem;
-    padding: 0.25rem 0.6rem;
-  }
+/* Responsive */
+@media (max-width: 768px) {
+  .mainGrid { grid-template-columns: 1fr; gap: 3rem; }
+  .statsBlock { gap: 1.5rem; justify-content: space-between; }
+  .cliBox { flex-direction: column; align-items: flex-start; gap: 1rem; }
 }

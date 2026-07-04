@@ -154,7 +154,14 @@
 
 .monitor {
   position:     relative;
-  width:        min(86vw, 800px);
+  /*
+   * 100vh caps the width so height (width × 0.7875 from the aspect-ratio
+   * below) never exceeds ~79vh — without this, short/landscape viewports
+   * (e.g. a phone rotated to landscape, still ≥768px wide so this desktop
+   * branch applies) get a monitor taller than the viewport itself, clipped
+   * by .heroSection's overflow: hidden into an unrecognizable close-up.
+   */
+  width:        min(86vw, 800px, 100vh);
   aspect-ratio: 4 / 3.15;
   border-radius: 2rem;
   background: linear-gradient(170deg, #2e2e2e 0%, #1d1d1d 40%, #161616 70%, #111 100%);
@@ -579,5 +586,181 @@
   .scrollHintText {
     font-size: 0.62rem;
     letter-spacing: 0.1em;
+  }
+}
+
+
+/* ═══════════════════════════════════════════════════════════════════════
+   AÑADIDOS — personaje del sistema + fondo de sala + entrada del monitor
+   ═══════════════════════════════════════════════════════════════════════ */
+
+/* ── Fondo de sala (silueta de fósforo) ──────────────────────────────────
+   z-index 0 = capa base junto al .ambientGlow. El .heroSection::after (z1)
+   lo oscurece hacia los bordes → efecto "iluminado por el monitor".
+   El monitor (.monitorWrapper, z2) queda por delante. */
+.roomBackdrop {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.roomBackdrop svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.bulb {
+  transform-box: fill-box;
+  transform-origin: 565px 0;
+  animation: bulb-sway 6s ease-in-out infinite;
+}
+
+@keyframes bulb-sway {
+  0%, 100% { transform: rotate(-1deg); }
+  50%      { transform: rotate(1deg); }
+}
+
+
+/* ── Escenario de la cara (reemplaza el render del boot log) ──────────── */
+.faceStage {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  gap: 1.1rem;
+}
+
+.faceGlyph {
+  font-family: var(--font-terminal), 'Courier New', monospace;
+  /* min(6vw, 9vh): on short/landscape viewports .monitor's width is capped
+     by vh (see .monitor above), so the glyph must shrink with height too,
+     or it overflows its own narrower-than-usual container and line-wraps. */
+  font-size: clamp(2rem, min(6vw, 9vh), 3.4rem);
+  color: #00ff41;
+  letter-spacing: 0.05em;
+  text-shadow:
+    0 0 8px  rgba(0, 255, 65, 0.9),
+    0 0 22px rgba(0, 255, 65, 0.4),
+    0 0 40px rgba(0, 255, 65, 0.18);
+}
+
+.dialogueLine {
+  font-family: var(--font-terminal), monospace;
+  font-size: clamp(0.85rem, 1.7vw, 1.1rem);
+  min-height: 1.6em;
+  color: #00ff41;
+  text-align: center;
+  text-shadow:
+    0 0 6px  rgba(0, 255, 65, 0.7),
+    0 0 16px rgba(0, 255, 65, 0.25);
+}
+
+.loader {
+  margin-top: 0.6rem;
+  font-family: var(--font-terminal), monospace;
+  font-size: 0.8rem;
+  letter-spacing: 0.15em;
+  color: rgba(0, 255, 65, 0.7);
+  text-shadow: 0 0 6px rgba(0, 255, 65, 0.4);
+}
+
+/* Fallback reduced-motion: la info tal cual, sin coreografía. */
+.staticInfo {
+  position: relative;
+  z-index: 10;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  color: #00ff41;
+  text-shadow: 0 0 6px rgba(0, 255, 65, 0.6);
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  border: 0;
+}
+
+
+/* ── Entrada del monitor ──────────────────────────────────────────────────
+   Va sobre .monitor (hijo), NO sobre .monitorWrapper (que escala GSAP).
+   opacity + transform únicamente — sin `filter`, para no reabrir el glitch. */
+.monitor {
+  animation: monitor-in 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes monitor-in {
+  0%   { opacity: 0; transform: translateY(14px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+
+/* ── Reduced motion ──────────────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  .monitor { animation: none; }
+  .bulb { animation: none; }
+}
+
+/* ── Ajuste Matemático del Fondo de Sala en Móviles ── */
+@media (max-width: 767px) {
+  .roomBackdrop {
+    opacity: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .roomBackdrop svg {
+    width: 100%;
+    height: 100%;
+  }
+
+  /* Grosor equilibrado: ni neón de discoteca, ni invisible */
+  .roomBackdrop svg g,
+  .roomBackdrop svg path,
+  .roomBackdrop svg rect,
+  .roomBackdrop svg line,
+  .roomBackdrop svg circle {
+    stroke-opacity: 0.5 !important;
+    stroke-width: 1.5px !important;
+  }
+
+  /* RESCATE DE LA ZONA MUERTA (sin usar scale) */
+  
+  .shelfGroup {
+    /* Original X: ~48 a 212. Lo empujamos 140px a la derecha para que entre al área visible, y lo subimos */
+    transform: translate(140px, -60px);
+  }
+  
+  .bulbGroup {
+    /* Original X: 565. Lo halamos 150px a la izquierda para rescatarlo del recorte derecho */
+    transform: translate(-150px, 20px);
+  }
+  
+  .deskGroup {
+    /* Original taza X: 486. La halamos 80px a la izq y bajamos la mesa 80px para que quede bajo el monitor */
+    transform: translate(-80px, 80px);
+  }
+
+  /* Viñeta abierta para dejar lucir el dibujo */
+  .heroSection::after {
+    background: radial-gradient(
+      ellipse 160% 120% at 50% 50%,
+      transparent 35%,
+      rgba(0, 0, 0, 0.85) 100%
+    ) !important;
   }
 }

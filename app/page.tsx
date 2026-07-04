@@ -2,12 +2,12 @@
  * app/page.tsx — Sprint 3 complete
  *
  * Narrative order:
- *  1. HeroCRT           — retro CRT terminal + GSAP zoom-out
- *  2. ActionSection     — modern bridge: headline + CTAs + stats
- *  3. ProjectsSection   — featured tríada with CSS device mockups
- *  4. ProjectArchive    — expandable full project history table
- *  4.5. CertificatesTeaser — badge divider that expands in-place into the trophy room
- *  5. ContactSection    — (Sprint 4)
+ *  1. HeroCRT              — retro CRT terminal + GSAP zoom-out
+ *  2. ActionSection        — modern bridge: headline + CTAs + stats
+ *  2.5. CertificatesTeaser — badge divider that expands in-place (antesala)
+ *  3. ProjectsSection      — featured tríada with CSS device mockups
+ *  4. ProjectArchive       — expandable full project history table
+ *  5. ContactSection       — contact form + JSON links
  *
  * ─── Critical architecture note ─────────────────────────────────────────────
  * <Navbar> is rendered OUTSIDE <main>, directly in the root fragment.
@@ -40,18 +40,19 @@ export default function Home() {
         {/* ── 2. Action / bridge ───────────────────────────────────── */}
         <ActionSection />
 
+        {/* ── 2.5. Logros y Certificaciones — in-place expandable ──── */}
+        <CertificatesTeaser />
+
         {/* ── 3. Featured projects tríada ──────────────────────────── */}
         <ProjectsSection />
 
         {/* ── 4. Full project archive (expandable) ─────────────────── */}
         <ProjectArchive />
 
-        {/* ── 4.5. Trophy room — in-place expandable section ───────────── */}
-        <CertificatesTeaser />
-
-        {/* ── 5. Contact — Sprint 4 ────────────────────────────────── */}
+        {/* ── 5. Contact ───────────────────────────────────────────── */}
         { <ContactSection /> }
       </main>
     </>
   )
 }
+

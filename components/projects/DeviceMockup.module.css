@@ -103,7 +103,9 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 320px;
+  /* Fixed 320px on desktop, but shrinks to fit narrower grid tracks
+     (e.g. 768–1100px, where the 3-col grid can't spare 320px/column). */
+  width: min(320px, 100%);
 }
 
 /* ── Lid (the screen half) ───────────────────────────────────────────── */

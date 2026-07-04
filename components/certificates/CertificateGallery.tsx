@@ -263,7 +263,7 @@ export function CertificateGallery({ onClose }: { onClose?: () => void }) {
         {/* ── Cabecera: nombre + filtros + cierre, una sola fila ── */}
         <div className="flex items-center gap-x-5 gap-y-3 px-6 py-4 border-b border-white/10 flex-wrap shrink-0">
           <h1 className="text-[10px] font-mono font-bold tracking-[0.3em] uppercase text-zinc-500 whitespace-nowrap">
-            Salón de Trofeos
+            Logros y Certificaciones
           </h1>
           <div className="flex gap-2 flex-wrap ml-auto">
             <FilterChip
