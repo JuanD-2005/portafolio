@@ -37,10 +37,23 @@
 
 /* flex: 0 0 92% deja ~8% del siguiente slide asomando (menos el gap, que
    lo adelgaza más) — un borde sutil, no medio panel. La señal principal
-   de "hay más" son las pestañas + flechas de abajo, no el peek en sí. */
+   de "hay más" son las pestañas + flechas de abajo, no el peek en sí.
+
+   padding-inline: 8% — el .viewport aplica una máscara de desvanecido al
+   7% de SU propio ancho en cada borde (ver mask-image abajo). Como cada
+   slide mide 92% de ese mismo ancho, 7% del viewport equivale a 7.6% del
+   slide (7 / 92); redondeado a 8% para dar colchón. Sin este padding, el
+   borde izquierdo del primer slide (y el derecho del último) coincide
+   exactamente con el borde del viewport, así que cualquier contenido a
+   ras de ese borde cae dentro de la zona que la máscara desvanece — se
+   confirmó midiendo en 375px: zona de máscara ≈ 23.5px, borde del slide
+   0 alineado px a px con el borde del viewport. Al ser un porcentaje del
+   ancho del propio slide (no un valor fijo en px), la relación se
+   mantiene proporcional sin importar el viewport. */
 .slide {
   flex: 0 0 92%;
   min-width: 0;
+  padding-inline: 8%;
 }
 
 .controls {
