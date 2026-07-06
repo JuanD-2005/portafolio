@@ -151,7 +151,11 @@ export default function CertificatesTeaser() {
         </button>
 
         <span className={s.rowHint} aria-hidden="true">
-          {text ? `${face} ${text}` : ''}
+          {text && (
+            <>
+              <span className={s.rowHintFace}>{face}</span> {text}
+            </>
+          )}
         </span>
         <span className="sr-only" aria-live="polite">{srText}</span>
       </div>

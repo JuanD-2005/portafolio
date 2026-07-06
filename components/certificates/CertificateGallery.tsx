@@ -14,6 +14,9 @@ import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import * as THREE from "three";
 import { BalatroCertificateCard } from "./BalatroCertificateCard";
 import { cardFaceDims, DEFAULT_ASPECT } from "./cardGeometry";
+import { useIsMobile } from "@/hooks/useIsMobile";
+import MobileCertificateViewer from "./MobileCertificateViewer";
+import CertificateSheet from "./CertificateSheet";
 import {
   DEMO_CERTIFICATES,
   CertificateData,
@@ -23,7 +26,8 @@ import {
 } from "../../data/certificates";
 
 // ─── Etiquetas cortas para los chips de filtro ─────────────────────────────
-const CATEGORY_LABEL: Record<CertificateCategory, string> = {
+// Exportado — lo reutiliza MobileCertificateViewer/CertificateSheet.
+export const CATEGORY_LABEL: Record<CertificateCategory, string> = {
   "Reconocimientos y Premios": "Premios",
   "Cursos y Capacitaciones": "Cursos",
 };
@@ -32,7 +36,7 @@ const CATEGORY_LABEL: Record<CertificateCategory, string> = {
 // usa un verde fósforo fijo #00ff41 — las cartas individuales (riel, panel
 // de lectura, luz 3D) usan el accentColor propio de cada certificado.
 
-type FilterValue = "TODOS" | CertificateCategory;
+export type FilterValue = "TODOS" | CertificateCategory;
 
 // ─── Íconos ─────────────────────────────────────────────────────────────────
 const IconLink = () => (
@@ -90,7 +94,7 @@ function CleanLights({ accent }: { accent: string }) {
 const CARD_SCALE = 1.3;
 const SHADOW_GAP = 0.15;
 
-function CardScene({ cert }: { cert: CertificateData }) {
+export function CardScene({ cert }: { cert: CertificateData }) {
   const accent = cert.accentColor ?? "#10b981";
 
   // Altura de cara (sin escala) reportada por la carta. Arranca en la del
@@ -131,8 +135,8 @@ function CardScene({ cert }: { cert: CertificateData }) {
   );
 }
 
-// ─── Chip de filtro ─────────────────────────────────────────────────────────
-function FilterChip({
+// ─── Chip de filtro — exportado, lo reutiliza CertificateSheet ─────────────
+export function FilterChip({
   label,
   active,
   onClick,
@@ -157,19 +161,23 @@ function FilterChip({
   );
 }
 
-// ─── Mini-carta del riel (la colección ES la navegación) ───────────────────
-function RailCard({
+// ─── Tarjeta de certificado — riel horizontal en desktop (layout="rail"),
+// grilla de 2 columnas en la hoja inferior mobile (layout="grid"). Mismo
+// componente, mismo look; solo el ancho cambia según dónde vive. ──────────
+export function CertificateCard({
   cert,
   index,
   active,
   reduceMotion,
   onSelect,
+  layout = "rail",
 }: {
   cert: CertificateData;
   index: number;
   active: boolean;
   reduceMotion: boolean;
   onSelect: () => void;
+  layout?: "rail" | "grid";
 }) {
   const accent = cert.accentColor ?? "#10b981";
 
@@ -188,7 +196,9 @@ function RailCard({
       whileHover={reduceMotion ? undefined : { y: -3 }}
       onClick={onSelect}
       aria-current={active}
-      className="relative shrink-0 w-[128px] text-left rounded-lg border overflow-hidden px-3.5 pt-3.5 pb-4 transition-colors duration-200"
+      className={`relative text-left rounded-lg border overflow-hidden px-3.5 pt-3.5 pb-4 transition-colors duration-200 ${
+        layout === "rail" ? "shrink-0 w-[128px]" : "w-full"
+      }`}
       style={{
         borderColor: active ? accent : "rgba(255,255,255,0.09)",
         background: "#0d0d0d",
@@ -222,9 +232,11 @@ function RailCard({
 export function CertificateGallery({ onClose }: { onClose?: () => void }) {
   const grouped = getCertificatesByCategory();
   const shouldReduceMotion = useReducedMotion();
+  const isMobile = useIsMobile();
 
   const [filter, setFilter] = useState<FilterValue>("TODOS");
   const [activeId, setActiveId] = useState<string>(DEMO_CERTIFICATES[0].id);
+  const [sheetOpen, setSheetOpen] = useState(false);
 
   const visible = useMemo(
     () => (filter === "TODOS" ? DEMO_CERTIFICATES : (grouped.get(filter) ?? [])),
@@ -250,6 +262,58 @@ export function CertificateGallery({ onClose }: { onClose?: () => void }) {
 
   const accent = active.accentColor ?? "#10b981";
 
+  // ── Rama mobile: certificado a la vez + swipe + hoja de selección.
+  // Completamente separada del árbol desktop de abajo — cero riesgo de
+  // que un cambio aquí afecte el layout de escritorio. El índice activo
+  // (activeId) es el mismo estado que ya existe arriba; el carrusel mobile
+  // y la hoja inferior solo lo leen/escriben, no duplican la fuente de
+  // verdad — igual que el riel de desktop hace con setActiveId. ───────────
+  if (isMobile) {
+    return (
+      <div className="relative w-full flex flex-col text-zinc-200">
+        <div
+          className="absolute inset-0 pointer-events-none z-0 opacity-50"
+          style={{
+            background:
+              "repeating-linear-gradient(0deg, rgba(0,0,0,0) 0px, rgba(0,0,0,0) 2px, rgba(0,0,0,0.22) 3px)",
+            mixBlendMode: "multiply",
+          }}
+          aria-hidden="true"
+        />
+
+        <div className="relative z-10 flex flex-col">
+          <div className="flex items-center gap-3 px-5 py-4 border-b border-white/10 shrink-0">
+            <span className="text-[11px] font-mono text-zinc-500">~/logros</span>
+            {onClose && (
+              <button
+                type="button"
+                onClick={onClose}
+                aria-label="Cerrar salón de trofeos"
+                className="ml-auto grid place-items-center w-8 h-8 rounded-full border border-white/10 text-zinc-500 hover:text-zinc-200 hover:border-white/25 active:scale-[0.93] transition-all duration-150"
+              >
+                <IconClose />
+              </button>
+            )}
+          </div>
+
+          <MobileCertificateViewer
+            certificates={DEMO_CERTIFICATES}
+            activeId={active.id}
+            onActiveChange={setActiveId}
+            onOpenSheet={() => setSheetOpen(true)}
+          />
+        </div>
+
+        <CertificateSheet
+          open={sheetOpen}
+          activeId={active.id}
+          onSelect={setActiveId}
+          onClose={() => setSheetOpen(false)}
+        />
+      </div>
+    );
+  }
+
   return (
     <div className="relative w-full flex flex-col text-zinc-200">
       {/* CRT scanline texture — sits behind all content, echoes HeroCRT */}
@@ -265,7 +329,7 @@ export function CertificateGallery({ onClose }: { onClose?: () => void }) {
 
       <div className="relative z-10 flex flex-col">
         {/* ── Cabecera: nombre + filtros + cierre, una sola fila ── */}
-        <div className="flex items-center gap-x-5 gap-y-3 px-6 py-4 border-b border-white/10 flex-wrap shrink-0">
+        <div className="order-1 flex items-center gap-x-5 gap-y-3 px-6 py-4 border-b border-white/10 flex-wrap shrink-0">
           <h1 className="text-[10px] font-mono font-bold tracking-[0.3em] uppercase text-zinc-500 whitespace-nowrap">
             Logros y Certificaciones
           </h1>
@@ -299,8 +363,11 @@ export function CertificateGallery({ onClose }: { onClose?: () => void }) {
           )}
         </div>
 
-        {/* ── Escenario 3D | Lectura de terminal — columnas hermanas, nunca se tapan ── */}
-        <div className="grid grid-cols-1 lg:grid-cols-[1.05fr_1fr] lg:items-stretch">
+        {/* ── Escenario 3D | Lectura de terminal — columnas hermanas, nunca se tapan ──
+             En mobile va DESPUÉS del riel (order-3): el riel es la navegación entre
+             certificados y no debería quedar al final de un scroll largo. Desktop
+             no cambia (order-2, su posición natural de siempre). */}
+        <div className="order-3 lg:order-2 grid grid-cols-1 lg:grid-cols-[1.05fr_1fr] lg:items-stretch">
           {/* Escenario anclado al aspecto de la carta (17/12 ≈ 1.417) — la fila
               se auto-dimensiona, sin negro sobrante ni alto fijo */}
           <div className="relative min-h-[340px] lg:min-h-0 lg:aspect-[17/12] border-b lg:border-b-0 lg:border-r border-white/10">
@@ -389,17 +456,22 @@ export function CertificateGallery({ onClose }: { onClose?: () => void }) {
           </div>
         </div>
 
-        {/* ── Riel de cartas: ES la navegación, no un sidebar aparte ── */}
-        <div className="shrink-0 border-t border-white/10 px-6 py-4 flex gap-3 overflow-x-auto">
+        {/* ── Riel de cartas: ES la navegación, no un sidebar aparte ──
+             En mobile va justo después del header (order-2) — es como se navega
+             entre certificados, no debería estar al final de un scroll largo.
+             Desktop no cambia (order-3, al final, como siempre). El borde se
+             voltea de arriba a abajo para separar del bloque que ahora sigue. */}
+        <div className="order-2 lg:order-3 shrink-0 border-b lg:border-b-0 lg:border-t border-white/10 px-6 py-4 flex gap-3 overflow-x-auto">
           <AnimatePresence initial={false} mode="popLayout">
             {visible.map((cert, i) => (
-              <RailCard
+              <CertificateCard
                 key={cert.id}
                 cert={cert}
                 index={i}
                 active={cert.id === active.id}
                 reduceMotion={!!shouldReduceMotion}
                 onSelect={() => setActiveId(cert.id)}
+                layout="rail"
               />
             ))}
           </AnimatePresence>

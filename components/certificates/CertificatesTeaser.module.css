@@ -98,6 +98,12 @@
   opacity: 0.8;
 }
 
+/* El kaomoji tiene espacios internos ("( ^ o ^ )") — sin nowrap, el
+   navegador puede partirlo justo ahí al envolver el texto del comentario. */
+.rowHintFace {
+  white-space: nowrap;
+}
+
 /* ── Expandable region (Framer Motion animates height 0 → auto) ───────────── */
 
 .panel {
