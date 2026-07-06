@@ -124,7 +124,7 @@ function CliBar({ face, text }: { face: string; text: string }) {
     <div className={s.cliBox}>
       <div className={s.cliLeft}>
         <span className={s.cliFace}>{face}</span>
-        <span className={s.cliText}>{text || 'esperando input...'}</span>
+        <span className={s.cliText}>{text || 'toca o haz clic para saber más'}</span>
         <span className={s.cliCursor}>█</span>
       </div>
       <span className={s.cliRight}>JP-OS · asistente</span>

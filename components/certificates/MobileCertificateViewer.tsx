@@ -2,11 +2,12 @@
 
 import { Suspense, useCallback, useEffect, useRef, useState } from "react";
 import { Canvas } from "@react-three/fiber";
+import { AnimatePresence, motion } from "framer-motion";
 import useEmblaCarousel from "embla-carousel-react";
 import { usePrefersReducedMotion } from "@/hooks/usePrefersReducedMotion";
 import { CardScene, CATEGORY_LABEL } from "./CertificateGallery";
 import { CertificateData } from "../../data/certificates";
-import { clampAspect, DEFAULT_ASPECT } from "./cardGeometry";
+import { DEFAULT_ASPECT } from "./cardGeometry";
 
 // ─── Íconos ─────────────────────────────────────────────────────────────────
 const IconLink = () => (
@@ -83,13 +84,13 @@ function CanvasStage({ cert }: { cert: CertificateData }) {
 
 // ─── Placeholder 2D — lo que asoma en el peek para los slides vecinos.
 // Deliberadamente neutro (sin accentColor): el peek ya lleva máscara de
-// desvanecimiento, así que cualquier color aquí competiría sin necesidad. ──
+// desvanecimiento, así que cualquier color aquí competiría sin necesidad.
+// Sin aspectRatio propio: el contenedor (más abajo) ya fija un aspecto
+// constante para los 13 slides — ver nota junto a SLIDE_ASPECT. ───────────
 function PlaceholderCard({ cert }: { cert: CertificateData }) {
-  const aspect = clampAspect(cert.aspectRatio ?? DEFAULT_ASPECT);
   return (
     <div
-      className="w-full rounded-lg border border-white/[0.06] bg-[#0a0a0a] flex items-end p-3"
-      style={{ aspectRatio: aspect }}
+      className="w-full h-full rounded-lg border border-white/[0.06] bg-[#0a0a0a] flex items-end p-3"
       aria-hidden="true"
     >
       <span className="text-[9px] font-mono uppercase tracking-[0.14em] text-zinc-700 line-clamp-1">
@@ -98,6 +99,20 @@ function PlaceholderCard({ cert }: { cert: CertificateData }) {
     </div>
   );
 }
+
+// El escenario de desktop usa un aspecto FIJO (17/12, ≈ DEFAULT_ASPECT) para
+// los 13 certificados por igual — <Bounds fit clip> ya se encarga de encajar
+// cada carta (tenga el aspecto real que tenga) dentro de esa caja constante,
+// sin dejar espacio muerto. Antes, este visor mobile calculaba un aspecto
+// DISTINTO por certificado (`clampAspect(cert.aspectRatio)`) para cada slide
+// — y como los 13 conviven en una misma fila flex sin altura fija, la fila
+// terminaba estirándose a la altura del hermano MÁS ALTO (un certificado
+// vertical, medido en 351px) aunque ese hermano solo estuviera asomando
+// fuera de vista. La carta activa (167px) quedaba con ~183px de vacío
+// debajo, antes del hint — confirmado midiendo el DOM, no a ojo. Reusar el
+// mismo aspecto fijo que desktop elimina la causa de raíz: los 13 slides
+// miden lo mismo, así que ningún vecino invisible puede inflar la fila.
+const SLIDE_ASPECT = DEFAULT_ASPECT;
 
 interface MobileCertificateViewerProps {
   certificates: CertificateData[];
@@ -168,6 +183,16 @@ export default function MobileCertificateViewer({
   const accent = active.accentColor ?? "#10b981";
   const total = certificates.length;
 
+  // El hint alterna "tocar para girar" / "deslizar para más" cada 3s — con
+  // reduced motion no ciclamos (queda fijo en el primero), en vez de
+  // forzar un cambio de contenido sin la transición que lo hace legible.
+  const [hintIndex, setHintIndex] = useState(0);
+  useEffect(() => {
+    if (reducedMotion) return;
+    const id = setInterval(() => setHintIndex((i) => (i === 0 ? 1 : 0)), 3000);
+    return () => clearInterval(id);
+  }, [reducedMotion]);
+
   return (
     <div className="flex flex-col gap-5 px-4 py-4">
       {/* ── Carta activa + peek difuminado (mismo tratamiento que el
@@ -188,7 +213,7 @@ export default function MobileCertificateViewer({
             <div key={cert.id} className="relative" style={{ flex: "0 0 92%", minWidth: 0 }}>
               <div
                 className="relative w-full rounded-lg overflow-hidden"
-                style={{ aspectRatio: clampAspect(cert.aspectRatio ?? DEFAULT_ASPECT) }}
+                style={{ aspectRatio: SLIDE_ASPECT }}
               >
                 {i === selectedIndex ? <CanvasStage cert={cert} /> : <PlaceholderCard cert={cert} />}
               </div>
@@ -196,9 +221,31 @@ export default function MobileCertificateViewer({
           ))}
         </div>
       </div>
-      <p className="text-center text-[10px] font-mono tracking-widest uppercase text-zinc-500 -mt-3">
-        Toca la carta para <span style={{ color: accent }}>girar</span>
-      </p>
+      <AnimatePresence mode="wait" initial={false}>
+        {hintIndex === 0 ? (
+          <motion.p
+            key="hint-flip"
+            initial={reducedMotion ? false : { opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={reducedMotion ? undefined : { opacity: 0 }}
+            transition={{ duration: reducedMotion ? 0 : 0.35 }}
+            className="text-center text-[10px] font-mono tracking-widest uppercase text-zinc-500 -mt-3"
+          >
+            Toca la carta para <span style={{ color: accent }}>girar</span>
+          </motion.p>
+        ) : (
+          <motion.p
+            key="hint-swipe"
+            initial={reducedMotion ? false : { opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={reducedMotion ? undefined : { opacity: 0 }}
+            transition={{ duration: reducedMotion ? 0 : 0.35 }}
+            className="text-center text-[10px] font-mono tracking-widest uppercase text-zinc-500 -mt-3"
+          >
+            Desliza para ver más <span style={{ color: accent }}>certificados</span>
+          </motion.p>
+        )}
+      </AnimatePresence>
 
       {/* ── Ficha de lectura del certificado activo ─────────────────────── */}
       <div className="flex flex-col gap-3">
