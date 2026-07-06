@@ -108,11 +108,14 @@ function NavBlock({ hoverProps }: { hoverProps: HoverProps }) {
     <div className={s.actionBlock}>
       <span className={s.pathLabel}>~/navegación</span>
       <div className={s.navButtons}>
-        <a href="https://linkedin.com/in/tu-usuario" target="_blank" rel="noopener noreferrer" className={s.navBtn} {...hoverProps('( ^ _ ^ )', 'conecta conmigo en linkedin')}>
+        <a href="https://www.linkedin.com/in/juan-diego-paredes-g%C3%A1mez-21415338a/" target="_blank" rel="noopener noreferrer" className={s.navBtn} {...hoverProps('( ^ _ ^ )', 'conecta conmigo en linkedin')}>
           <span className={s.navBtnArrow}>{'>'}</span> linkedin
         </a>
-        <a href="https://github.com/tu-usuario" target="_blank" rel="noopener noreferrer" className={s.navBtn} {...hoverProps('( 0 _ 0 )', 'revisa mi código fuente')}>
+        <a href="https://github.com/JuanD-2005" target="_blank" rel="noopener noreferrer" className={s.navBtn} {...hoverProps('( 0 _ 0 )', 'revisa mi código fuente')}>
           <span className={s.navBtnArrow}>{'>'}</span> github
+        </a>
+        <a href="mailto:jdpgparedes@gmail.com" className={s.navBtn} {...hoverProps('( ^ v ^ )', 'escríbeme un correo')}>
+          <span className={s.navBtnArrow}>{'>'}</span> correo
         </a>
       </div>
     </div>
