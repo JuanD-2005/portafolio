@@ -80,7 +80,11 @@
   background: #0a0a0a; font-family: var(--font-terminal), monospace;
 }
 .cliLeft { display: flex; align-items: center; gap: 1rem; color: #00ff41; font-size: 1rem; }
-.cliCursor { animation: blink 1s step-end infinite; }
+/* El kaomoji nunca debe partirse a dos líneas ni encogerse — el texto del
+   comentario sí puede envolver, tomando el espacio restante. */
+.cliFace { white-space: nowrap; flex-shrink: 0; }
+.cliText { flex: 1; min-width: 0; }
+.cliCursor { animation: blink 1s step-end infinite; flex-shrink: 0; }
 .cliRight { font-size: 0.75rem; color: #585450; }
 .modulesList { display: flex; align-items: center; gap: 1rem; font-family: var(--font-terminal), monospace; font-size: 0.75rem; padding-left: 0.5rem; flex-wrap: wrap; }
 .modulesTag { color: #00ff41; outline: none; cursor: crosshair; }
@@ -92,9 +96,61 @@
 @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
 @keyframes blink { 0%,100% { opacity: 1; } 50% { opacity: 0; } }
 
-/* Responsive */
+/* Responsive — mobile ya no renderiza .mainGrid en absoluto (rama JS
+   separada vía useIsMobile con el mismo breakpoint), así que ese override
+   quedó sin uso y se retiró. .statsBlock y .cliBox SÍ siguen vivos: los
+   reutiliza el carrusel mobile (ActionCarousel) y la barra fija del
+   asistente respectivamente.
+
+   .section: el padding base (8rem/6rem) es la palanca más grande para el
+   overflow vertical en mobile — sin este override, identidad+carrusel+
+   barra del asistente no caben ni cerca en un viewport real (~700-812px),
+   obligando a scrollear antes de ver el ancla del asistente. Confirmado
+   con medición real: 1014px de contenido necesario vs 700px disponibles
+   en 360×700 sin este ajuste.
+
+   .statValue: un notch más chico (3rem → 2.25rem) libera espacio vertical
+   en el slide de métricas, que es el bloque más alto del carrusel.
+
+   .inner: el gap base (4rem) entre los 4 bloques mobile (top bar,
+   identidad, carrusel, barra del asistente) suma 224px solo en espacios
+   — más que cualquier bloque individual. Se achica a 1.5rem en mobile.
+   .bottomCli pierde su margin-top extra (pensado para separarlo de
+   modulesList, que en mobile ya no vive ahí — se movió al carrusel). */
 @media (max-width: 768px) {
-  .mainGrid { grid-template-columns: 1fr; gap: 3rem; }
+  .section { padding: 2.5rem 1.25rem 2rem; }
+  .inner { gap: 1.5rem; }
   .statsBlock { gap: 1.5rem; justify-content: space-between; }
+  .statValue { font-size: 2.25rem; }
   .cliBox { flex-direction: column; align-items: flex-start; gap: 1rem; }
+  .bottomCli { margin-top: 0; }
+}
+
+/* ── Mobile-only: bloques que solo existen en la rama isMobile de
+   ActionSection.tsx (top bar compacta, identidad fija, pista final). El
+   carrusel en sí vive en ActionCarousel.module.css. ───────────────────── */
+
+.topBarMobile {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: var(--font-terminal), monospace;
+  font-size: 0.75rem;
+  letter-spacing: 0.05em;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+  padding-bottom: 0.75rem;
+}
+
+.mobileIdentity {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.mobileHint {
+  text-align: center;
+  font-family: var(--font-terminal), monospace;
+  font-size: 0.75rem;
+  color: #585450;
+  letter-spacing: 0.05em;
 }

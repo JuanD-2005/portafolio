@@ -1,0 +1,105 @@
+/* ─── ActionCarousel.module.css ───────────────────────────────────────────────
+ * Mobile-only carousel (Embla). Never loaded/rendered on desktop — same
+ * terminal language as ActionSection (mono, #00ff41 accent, #1a1a1a borders).
+ * ──────────────────────────────────────────────────────────────────────────── */
+
+.carousel {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.viewport {
+  overflow: hidden;
+  /* Difumina el borde donde asoma el slide vecino — se ve como un borde
+     que se desvanece hacia el fondo, no como contenido nítido compitiendo
+     por el tap (íconos/botones completos del panel de al lado). */
+  mask-image: linear-gradient(
+    to right,
+    transparent 0%,
+    black 7%,
+    black 93%,
+    transparent 100%
+  );
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent 0%,
+    black 7%,
+    black 93%,
+    transparent 100%
+  );
+}
+
+.container {
+  display: flex;
+  gap: 1rem;
+}
+
+/* flex: 0 0 92% deja ~8% del siguiente slide asomando (menos el gap, que
+   lo adelgaza más) — un borde sutil, no medio panel. La señal principal
+   de "hay más" son las pestañas + flechas de abajo, no el peek en sí. */
+.slide {
+  flex: 0 0 92%;
+  min-width: 0;
+}
+
+.controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+}
+
+.arrow {
+  display: grid;
+  place-items: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 6px;
+  border: 1px solid #1a1a1a;
+  background: transparent;
+  color: #585450;
+  font-size: 1.1rem;
+  line-height: 1;
+  cursor: pointer;
+  transition: all 0.2s;
+  flex-shrink: 0;
+}
+
+.arrow:hover,
+.arrow:focus-visible {
+  border-color: #00ff41;
+  color: #00ff41;
+  background: rgba(0, 255, 65, 0.05);
+}
+
+.dots {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.dot {
+  padding: 0.35rem 0.7rem;
+  border-radius: 999px;
+  border: 1px solid #1a1a1a;
+  background: transparent;
+  font-family: var(--font-terminal), monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.04em;
+  color: #585450;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.dot:hover,
+.dot:focus-visible {
+  color: #a09c96;
+  border-color: #333;
+}
+
+.dotActive {
+  color: #00ff41;
+  border-color: rgba(0, 255, 65, 0.4);
+  background: rgba(0, 255, 65, 0.06);
+}

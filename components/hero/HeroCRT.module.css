@@ -643,6 +643,10 @@
   font-size: clamp(2rem, min(6vw, 9vh), 3.4rem);
   color: #00ff41;
   letter-spacing: 0.05em;
+  /* El glyph "( ^ v ^ )" tiene espacios internos — sin nowrap, el navegador
+     puede partirlo justo ahí. Nunca debe envolver ni encogerse. */
+  white-space: nowrap;
+  flex-shrink: 0;
   text-shadow:
     0 0 8px  rgba(0, 255, 65, 0.9),
     0 0 22px rgba(0, 255, 65, 0.4),
