@@ -110,20 +110,22 @@ export default function CertificateSheet({ open, activeId, onSelect, onClose }: 
 
             <div className="flex-1 overflow-y-auto px-5 py-4">
               <div className="grid grid-cols-2 gap-3">
-                {visible.map((cert, i) => (
-                  <CertificateCard
-                    key={cert.id}
-                    cert={cert}
-                    index={i}
-                    active={cert.id === activeId}
-                    reduceMotion={!!shouldReduceMotion}
-                    layout="grid"
-                    onSelect={() => {
-                      onSelect(cert.id);
-                      onClose();
-                    }}
-                  />
-                ))}
+                <AnimatePresence initial={false} mode="popLayout">
+                  {visible.map((cert, i) => (
+                    <CertificateCard
+                      key={cert.id}
+                      cert={cert}
+                      index={i}
+                      active={cert.id === activeId}
+                      reduceMotion={!!shouldReduceMotion}
+                      layout="grid"
+                      onSelect={() => {
+                        onSelect(cert.id);
+                        onClose();
+                      }}
+                    />
+                  ))}
+                </AnimatePresence>
               </div>
             </div>
           </motion.div>
