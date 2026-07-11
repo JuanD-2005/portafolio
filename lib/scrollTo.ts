@@ -2,7 +2,7 @@
  * scrollTo
  *
  * Shared smooth-scroll utility. Centralises the logic so every CTA button
- * in the app (Navbar, ActionSection, ProjectArchive, etc.) behaves identically.
+ * in the app (Navbar, ActionSection, ProjectsSection, etc.) behaves identically.
  *
  * Why not CSS `scroll-behavior: smooth` alone?
  * Because the GSAP ScrollTrigger pin spacer adds synthetic height to the page

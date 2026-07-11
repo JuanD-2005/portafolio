@@ -5,9 +5,8 @@
  *  1. HeroCRT              — retro CRT terminal + GSAP zoom-out
  *  2. ActionSection        — modern bridge: headline + CTAs + stats
  *  2.5. CertificatesTeaser — badge divider that expands in-place (antesala)
- *  3. ProjectsSection      — featured tríada with CSS device mockups
- *  4. ProjectArchive       — expandable full project history table
- *  5. ContactSection       — contact form + JSON links
+ *  3. ProjectsSection      — tabs: featured tríada + category archive tables
+ *  4. ContactSection       — contact form + JSON links
  *
  * ─── Critical architecture note ─────────────────────────────────────────────
  * <Navbar> is rendered OUTSIDE <main>, directly in the root fragment.
@@ -23,7 +22,6 @@ import HeroWrapper        from '@/components/hero/HeroWrapper'
 import Navbar             from '@/components/layout/Navbar'
 import ActionSection      from '@/components/sections/ActionSection'
 import ProjectsSection    from '@/components/projects/ProjectsSection'
-import ProjectArchive     from '@/components/projects/ProjectArchive'
 import CertificatesTeaser from '@/components/certificates/CertificatesTeaser'
 import ContactSection     from '@/components/contact/ContactSection'
 
@@ -43,13 +41,10 @@ export default function Home() {
         {/* ── 2.5. Logros y Certificaciones — in-place expandable ──── */}
         <CertificatesTeaser />
 
-        {/* ── 3. Featured projects tríada ──────────────────────────── */}
+        {/* ── 3. Projects: tabs (Destacado + categorías) ────────────── */}
         <ProjectsSection />
 
-        {/* ── 4. Full project archive (expandable) ─────────────────── */}
-        <ProjectArchive />
-
-        {/* ── 5. Contact ───────────────────────────────────────────── */}
+        {/* ── 4. Contact ───────────────────────────────────────────── */}
         { <ContactSection /> }
       </main>
     </>

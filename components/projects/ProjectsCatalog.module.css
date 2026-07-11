@@ -1,0 +1,654 @@
+/* ─── ProjectsCatalog.module.css ──────────────────────────────────────────────
+ * Body de la vista "Todos": barra del asistente + grilla de 3 columnas
+ * paginada, con detalle de proyecto embebido en el mismo contenedor.
+ * ──────────────────────────────────────────────────────────────────────────── */
+
+.wrapper {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 2.5rem;
+}
+
+/* ── Assistant bar ───────────────────────────────────────────────────────── */
+
+.assistantBar {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1.25rem 1.5rem;
+  border: 1px dashed rgba(255, 255, 255, 0.16);
+  border-radius: 0;
+  background: rgba(16, 185, 129, 0.03);
+}
+
+.assistantHead {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+}
+
+.faceGlyph {
+  font-family: var(--font-terminal), monospace;
+  font-size: 1.1rem;
+  color: #10b981;
+  flex-shrink: 0;
+}
+
+.assistantLine {
+  flex: 1;
+  min-width: 0;
+  font-family: var(--font-terminal), monospace;
+  font-size: 0.85rem;
+  color: rgba(16, 185, 129, 0.8);
+  min-height: 1.2em;
+}
+
+/* ── Category shortcuts — more prominent than the suggestion chips ────────── */
+
+.shortcuts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}
+
+.shortcut {
+  padding: 0.5rem 1.1rem;
+  border-radius: 999px;
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  background: transparent;
+  color: rgba(16, 185, 129, 0.75);
+  font-family: var(--font-terminal), monospace;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: border-color 0.2s ease, color 0.2s ease, background 0.2s ease;
+}
+
+.shortcut:hover {
+  border-color: #34d399;
+  color: #34d399;
+  background: rgba(16, 185, 129, 0.06);
+}
+
+.shortcut:focus-visible {
+  outline: 2px solid #10b981;
+  outline-offset: 2px;
+}
+
+.shortcut[aria-pressed="true"] {
+  border-color: #10b981;
+  color: #34d399;
+  background: rgba(16, 185, 129, 0.12);
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.chip {
+  padding: 0.4rem 0.85rem;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: transparent;
+  color: rgba(160, 156, 150, 0.7);
+  font-family: var(--font-terminal), monospace;
+  font-size: 0.72rem;
+  cursor: pointer;
+  transition: border-color 0.2s ease, color 0.2s ease, background 0.2s ease;
+}
+
+.chip:hover {
+  border-color: rgba(16, 185, 129, 0.45);
+  color: #34d399;
+  background: rgba(16, 185, 129, 0.05);
+}
+
+.chip:focus-visible {
+  outline: 2px solid #10b981;
+  outline-offset: 2px;
+}
+
+/* Mobile-only "expand" command — desktop always shows the chips row */
+.advancedToggle {
+  display: none;
+}
+
+.inputRow {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding-bottom: 0.5rem;
+}
+
+.prompt {
+  color: rgba(16, 185, 129, 0.55);
+  font-family: var(--font-terminal), monospace;
+  font-size: 0.85rem;
+}
+
+.inputWrap {
+  position: relative;
+  flex: 1;
+  display: flex;
+  align-items: center;
+}
+
+.input {
+  width: 100%;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: #34d399;
+  caret-color: #34d399;
+  font-family: var(--font-terminal), monospace;
+  font-size: 0.85rem;
+}
+
+.input:focus-visible {
+  outline: 2px solid #10b981;
+  outline-offset: 3px;
+}
+
+/* Fake placeholder with a trailing blinking cursor — real terminals don't
+   go dark until you type, so the line stays "alive" from first paint. */
+.fakePlaceholder {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  pointer-events: none;
+  overflow: hidden;
+  white-space: nowrap;
+  color: rgba(160, 156, 150, 0.4);
+  font-family: var(--font-terminal), monospace;
+  font-size: 0.85rem;
+}
+
+.blinkCursor {
+  display: inline-block;
+  flex-shrink: 0;
+  width: 6px;
+  height: 1em;
+  margin-left: 2px;
+  background: #34d399;
+  animation: catalogBlink 1s step-end infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .blinkCursor {
+    animation: none;
+  }
+}
+
+@keyframes catalogBlink {
+  0%, 49%  { opacity: 1; }
+  50%, 100% { opacity: 0; }
+}
+
+/* ── Grid ─────────────────────────────────────────────────────────────────── */
+
+.grid {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.25rem;
+}
+
+.card {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.5rem;
+  padding: 1.25rem 1.1rem;
+  text-align: left;
+  background: rgba(255, 255, 255, 0.015);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-top: 2px solid rgba(255, 255, 255, 0.15);
+  border-radius: 0;
+  cursor: pointer;
+  transition: background 0.12s ease, color 0.12s ease, border-color 0.12s ease;
+}
+
+/* Hover/focus: invert like a console selection — solid fill, black text */
+.card:hover,
+.card:focus-visible {
+  background: #10b981;
+  border-color: #10b981;
+}
+
+.card:hover .meta,
+.card:focus-visible .meta,
+.card:hover .cardTitle,
+.card:focus-visible .cardTitle,
+.card:hover .metaStar,
+.card:focus-visible .metaStar,
+.card:hover .star,
+.card:focus-visible .star {
+  color: #050505;
+}
+
+.card:hover .techChip,
+.card:focus-visible .techChip {
+  color: #050505;
+  border-color: rgba(5, 5, 5, 0.35);
+  background: rgba(5, 5, 5, 0.12);
+}
+
+.card:focus-visible {
+  outline: 2px solid #f0ede8;
+  outline-offset: 2px;
+}
+
+.card--ia       { border-top-color: #10b981; }
+.card--design   { border-top-color: #0ea5e9; }
+.card--software { border-top-color: rgba(255, 255, 255, 0.25); }
+
+/* Subtle dot pattern to flag spotlight projects even before reading */
+.card--featured {
+  background-image: radial-gradient(rgba(255, 255, 255, 0.06) 1px, transparent 1px);
+  background-size: 10px 10px;
+}
+
+.card--featured:hover,
+.card--featured:focus-visible {
+  background-image: radial-gradient(rgba(5, 5, 5, 0.12) 1px, transparent 1px);
+  background-size: 10px 10px;
+}
+
+.star {
+  position: absolute;
+  top: 0.85rem;
+  right: 0.9rem;
+  color: #fbbf24;
+  font-size: 0.85rem;
+  transition: color 0.12s ease;
+}
+
+.meta {
+  font-family: var(--font-terminal), monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: rgba(160, 156, 150, 0.55);
+  transition: color 0.12s ease;
+}
+
+.metaStar {
+  color: #fbbf24;
+  text-transform: none;
+  letter-spacing: normal;
+  transition: color 0.12s ease;
+}
+
+.cardTitle {
+  font-family: var(--font-heading), sans-serif;
+  font-size: 1.05rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: #f0ede8;
+  transition: color 0.12s ease;
+}
+
+.cardTech {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin-top: auto;
+  padding-top: 0.4rem;
+}
+
+.techChip {
+  padding: 0.18rem 0.55rem;
+  border-radius: 4px;
+  border: 1px solid rgba(16, 185, 129, 0.2);
+  background: rgba(16, 185, 129, 0.05);
+  font-family: var(--font-terminal), monospace;
+  font-size: 0.68rem;
+  color: rgba(16, 185, 129, 0.7);
+  transition: color 0.12s ease, border-color 0.12s ease, background 0.12s ease;
+}
+
+.empty {
+  text-align: center;
+  padding: 2.5rem 0;
+  font-family: var(--font-terminal), monospace;
+  font-size: 0.85rem;
+  color: rgba(160, 156, 150, 0.5);
+}
+
+/* ── Pagination ───────────────────────────────────────────────────────────── */
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-top: 2rem;
+}
+
+.pageBtn {
+  width: 2rem;
+  height: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: transparent;
+  color: rgba(160, 156, 150, 0.6);
+  font-family: var(--font-terminal), monospace;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: border-color 0.2s ease, color 0.2s ease, background 0.2s ease;
+}
+
+.pageBtn:hover {
+  border-color: rgba(16, 185, 129, 0.4);
+  color: #34d399;
+}
+
+.pageBtn:focus-visible {
+  outline: 2px solid #10b981;
+  outline-offset: 2px;
+}
+
+.pageBtn[aria-current="page"] {
+  border-color: #10b981;
+  background: rgba(16, 185, 129, 0.12);
+  color: #34d399;
+}
+
+/* Mobile pagination — Prev/Next blocks + zero-padded counter, no circles */
+.paginationMobile {
+  display: none;
+}
+
+/* ── Detail ───────────────────────────────────────────────────────────────── */
+
+.detail {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.backBtn {
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  background: transparent;
+  border: none;
+  padding: 0.25rem 0;
+  color: rgba(16, 185, 129, 0.75);
+  font-family: var(--font-terminal), monospace;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.backBtn:hover {
+  color: #34d399;
+}
+
+.backBtn:focus-visible {
+  outline: 2px solid #10b981;
+  outline-offset: 3px;
+}
+
+.detailBody {
+  display: grid;
+  grid-template-columns: 1fr 1.4fr;
+  gap: 2rem;
+  align-items: start;
+}
+
+.detailInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.detailTitle {
+  font-family: var(--font-heading), sans-serif;
+  font-size: clamp(1.5rem, 3.5vw, 2rem);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: #f0ede8;
+}
+
+.desc {
+  font-family: var(--font-body), sans-serif;
+  font-size: 0.88rem;
+  line-height: 1.65;
+  color: rgba(160, 156, 150, 0.8);
+}
+
+.techRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem;
+  margin-top: 0.5rem;
+}
+
+.repoLink {
+  margin-top: 0.5rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-family: var(--font-terminal), monospace;
+  font-size: 0.8rem;
+  color: rgba(16, 185, 129, 0.75);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.repoLink:hover {
+  color: #34d399;
+}
+
+/* ── Responsive ──────────────────────────────────────────────────────────── */
+
+@media (max-width: 900px) {
+  .grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Pagination swaps to Prev/Next below 768px — numbered circles don't
+   survive thumb-sized touch targets at that width. */
+@media (max-width: 767px) {
+  .pagination {
+    display: none;
+  }
+
+  .paginationMobile {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.75rem;
+    margin-top: 2rem;
+  }
+
+  .pageNavBtn {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 44px;
+    padding: 0.6rem 1rem;
+    border-radius: 0;
+    border: 1px solid rgba(16, 185, 129, 0.35);
+    background: transparent;
+    color: #34d399;
+    font-family: var(--font-terminal), monospace;
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    cursor: pointer;
+    transition: background 0.1s ease, color 0.1s ease;
+  }
+
+  .pageNavBtn:active:not(:disabled) {
+    background: #10b981;
+    border-color: #10b981;
+    color: #050505;
+  }
+
+  .pageNavBtn:focus-visible {
+    outline: 2px solid #10b981;
+    outline-offset: 2px;
+  }
+
+  .pageNavBtn:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+  }
+
+  .pageCounter {
+    flex-shrink: 0;
+    min-width: 4.5em;
+    text-align: center;
+    font-family: var(--font-terminal), monospace;
+    font-size: 0.8rem;
+    letter-spacing: 0.04em;
+    color: rgba(160, 156, 150, 0.75);
+  }
+}
+
+@media (max-width: 640px) {
+  .assistantBar {
+    padding: 0.85rem 1rem;
+    gap: 0.75rem;
+  }
+
+  /* Una sola línea — "sistema listo. ¿qué querés ver del trabajo de Juan?"
+     se corta en vez de empujar las tarjetas fuera de la pantalla inicial. */
+  .assistantLine {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .shortcuts {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 0.25rem;
+    /* Se desvanece hacia la derecha — pista de que hay más para deslizar */
+    mask-image: linear-gradient(to right, black calc(100% - 28px), transparent 100%);
+    -webkit-mask-image: linear-gradient(to right, black calc(100% - 28px), transparent 100%);
+    /* Scroll táctil sí, barra nativa gris no */
+    scrollbar-width: none;        /* Firefox */
+    -ms-overflow-style: none;     /* IE/Edge legacy */
+  }
+
+  .shortcuts::-webkit-scrollbar {
+    display: none;                /* WebKit/Blink */
+  }
+
+  .shortcut {
+    flex-shrink: 0;
+  }
+
+  /* El acordeón de opciones se abre como una ventana modal de consola:
+     negra opaca, borde neón, esquinas rectas y sombra dura de bloque. */
+  .chips {
+    flex-direction: column;
+    flex-wrap: nowrap;
+    gap: 0;
+    margin-top: 0.2rem;
+    padding: 0.35rem;
+    background: #000000;
+    border: 1px solid #10b981;
+    border-radius: 0;
+    box-shadow: 4px 4px 0 #10b981;
+  }
+
+  .chip {
+    position: relative;
+    width: 100%;
+    padding: 0.55rem 0.75rem 0.55rem 1.5rem;
+    border: none;
+    border-radius: 0;
+    background: transparent;
+    color: rgba(16, 185, 129, 0.8);
+    text-align: left;
+  }
+
+  /* Prompt de comando que aparece al enfocar/hover, como en una CLI */
+  .chip::before {
+    content: '>';
+    position: absolute;
+    left: 0.6rem;
+    color: #34d399;
+    opacity: 0;
+    transition: opacity 0.12s ease;
+  }
+
+  .chip:hover,
+  .chip:focus-visible {
+    background: rgba(16, 185, 129, 0.12);
+    color: #34d399;
+  }
+
+  .chip:hover::before,
+  .chip:focus-visible::before {
+    opacity: 1;
+  }
+
+  /* Acordeón: la fila de sugerencias queda oculta tras un comando expansible */
+  .advancedToggle {
+    display: inline-flex;
+    align-items: center;
+    align-self: flex-start;
+    gap: 0.3rem;
+    padding: 0.15rem 0;
+    background: transparent;
+    border: none;
+    color: rgba(16, 185, 129, 0.7);
+    font-family: var(--font-terminal), monospace;
+    font-size: 0.75rem;
+    cursor: pointer;
+  }
+
+  .advancedToggle:hover {
+    color: #34d399;
+  }
+
+  .advancedToggle:focus-visible {
+    outline: 2px solid #10b981;
+    outline-offset: 2px;
+  }
+
+  .chipsCollapsed {
+    display: none;
+  }
+
+  .inputRow {
+    padding-bottom: 0.35rem;
+  }
+
+  .input,
+  .fakePlaceholder {
+    font-size: 0.8rem;
+  }
+
+  .grid {
+    grid-template-columns: 1fr;
+  }
+
+  .detailBody {
+    grid-template-columns: 1fr;
+  }
+}

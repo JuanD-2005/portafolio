@@ -1,35 +1,36 @@
 /* ─── Navbar.module.css ──────────────────────────────────────────────────────
- * Floating pill navbar — glassmorphism on a dark background.
- * Position: fixed top, centered with left:50% + translateX(-50%).
+ * Full-width rigid bar — no pill, no curves. Fixed top, border-bottom only.
  * ──────────────────────────────────────────────────────────────────────────── */
 
 .root {
   position: fixed;
-  top: 1.25rem;
-  left: 50%;
-  /* translateX(-50%) applied via Framer Motion initial/animate */
+  top: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
   z-index: 100;
   /* pointer-events are always on — Framer opacity handles visibility */
 }
 
-.pill {
+.bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 0.85rem 2rem;
+  border-radius: 0;
+
+  /* Dark tinted surface, squared off, separated by a hairline */
+  background: rgba(5, 5, 5, 0.82);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+}
+
+.navGroup {
   display: flex;
   align-items: center;
   gap: 0.25rem;
-  padding: 0.4rem 0.5rem;
-  border-radius: 999px;
-
-  /* Glassmorphism: dark tinted surface + thin light border */
-  background: rgba(10, 10, 10, 0.72);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  backdrop-filter: blur(20px) saturate(180%);
-  -webkit-backdrop-filter: blur(20px) saturate(180%);
-
-  /* Subtle outer glow */
-  box-shadow:
-    0 0 0 1px rgba(0, 0, 0, 0.5),
-    0 4px 24px rgba(0, 0, 0, 0.45),
-    0 1px 0 rgba(255, 255, 255, 0.04) inset;
 }
 
 /* ── Nav links ──────────────────────────────────────────────────────────── */
@@ -79,27 +80,48 @@
 .ctaButton {
   display: flex;
   align-items: center;
-  gap: 0.4rem;
-  padding: 0.45rem 1rem;
+  padding: 0.5rem 1rem;
   margin-left: 0.25rem;
-  border-radius: 999px;
-  font-family: var(--font-body), sans-serif;
+  border-radius: 0;
+  font-family: var(--font-terminal), monospace;
   font-size: 0.82rem;
-  font-weight: 500;
-  color: #0a0a0a;
-  background: rgba(240, 237, 232, 0.92);
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: #050505;
+  background: #10b981;
   border: none;
   cursor: pointer;
   text-decoration: none;
-  transition: background 0.2s ease, transform 0.15s ease;
+  transition: background 0.15s ease, color 0.15s ease;
   white-space: nowrap;
 }
 
 .ctaButton:hover {
-  background: #ffffff;
-  transform: scale(1.03);
+  background: #34d399;
 }
 
 .ctaButton:active {
-  transform: scale(0.98);
+  background: #f0ede8;
+}
+
+/* ── Responsive ──────────────────────────────────────────────────────────── */
+
+@media (max-width: 640px) {
+  .bar {
+    padding: 0.7rem 1rem;
+  }
+
+  .navGroup {
+    gap: 0.1rem;
+  }
+
+  .link {
+    padding: 0.4rem 0.55rem;
+    font-size: 0.74rem;
+  }
+
+  .ctaButton {
+    padding: 0.4rem 0.7rem;
+    font-size: 0.74rem;
+  }
 }

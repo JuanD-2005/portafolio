@@ -7,17 +7,7 @@ import {
   useState,
   useSyncExternalStore,
 } from "react";
-
-/* Vocabulario de expresiones del personaje del sistema (kaomojis). */
-const FACE = {
-  sleep: "( - v - )", // dormido / parpadeo
-  wake: "( O _ O )", // despierta sorprendido
-  talkClosed: "( ^ _ ^ )", // hablando · boca cerrada
-  talkOpen: "( ^ O ^ )", // hablando · boca abierta
-  happy: "( ^ v ^ )", // reposo entre líneas
-  leaving: "( ; _ ; )/", // el usuario se va (scroll ↓)
-  back: "( O _ O )", // el usuario vuelve (scroll ↑)
-} as const;
+import { FACE } from "@/lib/systemPersona";
 
 type Phase = "loading" | "wake" | "speaking";
 type Reaction = "leaving" | "returning" | null;
