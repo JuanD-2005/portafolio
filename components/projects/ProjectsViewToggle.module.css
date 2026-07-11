@@ -1,0 +1,105 @@
+/* ─── ProjectsViewToggle.module.css ──────────────────────────────────────────
+ * El encabezado-control: título grande serif que se reescribe entre
+ * "Destacados" ↔ "Todos los proyectos", con flecha + label del destino.
+ * ──────────────────────────────────────────────────────────────────────────── */
+
+.header {
+  margin-bottom: 3.5rem;
+}
+
+.control {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.5rem;
+  background: transparent;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  text-align: left;
+}
+
+.control:focus-visible {
+  outline: 2px solid #10b981;
+  outline-offset: 6px;
+  border-radius: 2px;
+}
+
+.title {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+}
+
+.prompt {
+  font-family: var(--font-terminal), monospace;
+  font-size: clamp(1rem, 2vw, 1.3rem);
+  color: rgba(16, 185, 129, 0.6);
+}
+
+.animated {
+  font-family:    var(--font-heading), sans-serif;
+  font-size:      clamp(1.8rem, 4.5vw, 2.6rem);
+  font-weight:    700;
+  letter-spacing: -0.02em;
+  color:          #f0ede8;
+  line-height:    1.05;
+}
+
+.cursor {
+  display: inline-block;
+  width: 0.5rem;
+  height: clamp(1.4rem, 3.4vw, 2rem);
+  background: #10b981;
+  animation: blink 1s step-end infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cursor {
+    display: none;
+  }
+}
+
+@keyframes blink {
+  0%, 49%  { opacity: 1; }
+  50%, 100% { opacity: 0; }
+}
+
+.dest {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-family: var(--font-terminal), monospace;
+  font-size: 0.95rem;
+  color: rgba(200, 196, 190, 0.5);
+  transition: color 0.2s ease;
+}
+
+.arrow {
+  color: #10b981;
+  transition: color 0.2s ease, transform 0.2s ease;
+}
+
+.control:hover .dest,
+.control:focus-visible .dest {
+  color: #34d399;
+}
+
+.control:hover .arrow,
+.control:focus-visible .arrow {
+  color: #34d399;
+  transform: translateX(3px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .control:hover .arrow,
+  .control:focus-visible .arrow {
+    transform: none;
+  }
+}
+
+@media (max-width: 700px) {
+  .header {
+    margin-bottom: 2.5rem;
+  }
+}

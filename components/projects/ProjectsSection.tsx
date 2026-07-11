@@ -1,50 +1,60 @@
 'use client'
 
-import { motion } from 'framer-motion'
+import { useState } from 'react'
+import { AnimatePresence, motion } from 'framer-motion'
 import { staggerContainer, fadeUpSlow } from '@/animations/variants'
-import { featuredProjects }              from '@/data/projects'
-import ProjectCard                       from './ProjectCard'
-import s                                 from './ProjectsSection.module.css'
+import { featuredProjects } from '@/data/projects'
+import type { ProjectView } from '@/types'
+import ProjectCard from './ProjectCard'
+import ProjectsCatalog from './ProjectsCatalog'
+import ProjectsViewToggle from './ProjectsViewToggle'
+import s from './ProjectsSection.module.css'
 
 export default function ProjectsSection() {
+  const [view, setView] = useState<ProjectView>('destacados')
+
   return (
-    <section id="projects" aria-label="Proyectos destacados" className={s.section}>
+    <section id="projects" aria-label="Proyectos" className={s.section}>
       <div className={s.inner}>
 
-        {/* Header */}
-        <motion.div
-          className={s.header}
-          variants={staggerContainer}
+        <motion.p
+          className={s.eyebrow}
+          variants={fadeUpSlow}
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, margin: '-60px' }}
         >
-          <div>
-            <motion.p className={s.eyebrow} variants={fadeUpSlow}>
-              TRABAJO SELECCIONADO
-            </motion.p>
-            <motion.h2 className={s.title} variants={fadeUpSlow}>
-              Proyectos<br />destacados
-            </motion.h2>
-          </div>
-          <motion.p className={s.subtitle} variants={fadeUpSlow}>
-            Web, móvil y todo lo que hay en el medio.
-            Cada proyecto con su mockup real.
-          </motion.p>
-        </motion.div>
+          ~/proyectos
+        </motion.p>
 
-        {/* Cards — staggerContainer orquesta el float-up */}
-        <motion.div
-          className={s.grid}
-          variants={staggerContainer}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: '-40px' }}
-        >
-          {featuredProjects.map((project, i) => (
-            <ProjectCard key={project.id} project={project} index={i} />
-          ))}
-        </motion.div>
+        <ProjectsViewToggle view={view} onToggle={setView} />
+
+        <AnimatePresence mode="wait">
+          {view === 'destacados' ? (
+            <motion.div
+              key="destacados"
+              className={s.grid}
+              variants={staggerContainer}
+              initial="hidden"
+              animate="visible"
+              exit={{ opacity: 0, transition: { duration: 0.2 } }}
+            >
+              {featuredProjects.map((project, i) => (
+                <ProjectCard key={project.id} project={project} index={i} />
+              ))}
+            </motion.div>
+          ) : (
+            <motion.div
+              key="todos"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0, transition: { duration: 0.2 } }}
+              transition={{ duration: 0.3 }}
+            >
+              <ProjectsCatalog />
+            </motion.div>
+          )}
+        </AnimatePresence>
 
       </div>
     </section>

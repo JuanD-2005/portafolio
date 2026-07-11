@@ -40,24 +40,24 @@ export default function Navbar() {
           initial="hidden"
           animate="visible"
           exit="hidden"
-          // Keep the pill horizontally centered regardless of viewport width
-          style={{ x: '-50%' }}
         >
-          <div className={s.pill}>
-            {NAV_LINKS.map((link, i) => (
-              <div key={link.href} style={{ display: 'contents' }}>
-                {i > 0 && (
-                  <span className={s.dot} aria-hidden="true" />
-                )}
-                <a
-                  href={link.href}
-                  className={s.link}
-                  onClick={makeScrollHandler(link.href)}
-                >
-                  {link.label}
-                </a>
-              </div>
-            ))}
+          <div className={s.bar}>
+            <div className={s.navGroup}>
+              {NAV_LINKS.map((link, i) => (
+                <div key={link.href} style={{ display: 'contents' }}>
+                  {i > 0 && (
+                    <span className={s.dot} aria-hidden="true" />
+                  )}
+                  <a
+                    href={link.href}
+                    className={s.link}
+                    onClick={makeScrollHandler(link.href)}
+                  >
+                    {link.label}
+                  </a>
+                </div>
+              ))}
+            </div>
 
             {/* CTA separado: ir directo a contacto */}
             <a
