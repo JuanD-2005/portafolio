@@ -77,23 +77,23 @@ function CvBlock({ hoverProps, onDownload }: { hoverProps: HoverProps; onDownloa
     <div className={s.actionBlock}>
       <span className={s.pathLabel}>~/curriculum</span>
       <div className={s.cvCards}>
-        <a href="/Juan_Paredes_CV.pdf" download="Juan_Paredes_CV.pdf" onClick={() => onDownload('es')} className={s.cvCard} {...hoverProps('( ^ v ^ )', 'versión en español')}>
+        <a href="/ESP_CV_JuanParedes_FullStack.pdf" download="ESP_CV_JuanParedes_FullStack.pdf" onClick={() => onDownload('es')} className={s.cvCard} {...hoverProps('( ^ v ^ )', 'versión en español')}>
           <div className={s.cvCardInfo}>
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M4 2v12a1 1 0 001 1h6a1 1 0 001-1V5L8 2H5a1 1 0 00-1 1z" stroke="currentColor" strokeWidth="1.5"/></svg>
             <div>
               <p className={s.cvCardTitle}>cv_es.pdf</p>
-              <p className={s.cvCardMeta}>español · 214 KB</p>
+              <p className={s.cvCardMeta}>español · 96 KB</p>
             </div>
           </div>
           <div className={s.downloadBtn}><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1v9M4 7l3 3 3-3M2 12h10" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg></div>
         </a>
 
-        <a href="/Resume JuanParedes.pdf" download="Resume JuanParedes.pdf" onClick={() => onDownload('en')} className={s.cvCard} {...hoverProps('( ^ v ^ )', 'english version')}>
+        <a href="/ENG_Juan_Paredes_CV_FullStack.pdf" download="ENG_Juan_Paredes_CV_FullStack.pdf" onClick={() => onDownload('en')} className={s.cvCard} {...hoverProps('( ^ v ^ )', 'english version')}>
           <div className={s.cvCardInfo}>
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M4 2v12a1 1 0 001 1h6a1 1 0 001-1V5L8 2H5a1 1 0 00-1 1z" stroke="currentColor" strokeWidth="1.5"/></svg>
             <div>
               <p className={s.cvCardTitle}>cv_en.pdf</p>
-              <p className={s.cvCardMeta}>english · 209 KB</p>
+              <p className={s.cvCardMeta}>english · 88 KB</p>
             </div>
           </div>
           <div className={s.downloadBtn}><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1v9M4 7l3 3 3-3M2 12h10" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg></div>
