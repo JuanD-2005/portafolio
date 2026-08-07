@@ -2,12 +2,12 @@
 
 import { useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
-import { staggerContainer, fadeUpSlow } from '@/animations/variants'
-import { featuredProjects } from '@/data/projects'
+import { fadeUpSlow } from '@/animations/variants'
+import { featuredProjects, archiveProjects } from '@/data/projects'
 import type { ProjectView } from '@/types'
 import ProjectCard from './ProjectCard'
-import ProjectsCatalog from './ProjectsCatalog'
-import ProjectsViewToggle from './ProjectsViewToggle'
+import ProjectsSegmentedToggle from './ProjectsSegmentedToggle'
+import ProjectCatalog from './ProjectCatalog'
 import s from './ProjectsSection.module.css'
 
 export default function ProjectsSection() {
@@ -27,17 +27,27 @@ export default function ProjectsSection() {
           ~/proyectos
         </motion.p>
 
-        <ProjectsViewToggle view={view} onToggle={setView} />
+        <div className="mb-10 flex flex-wrap items-center justify-between gap-4 sm:mb-14">
+          <h2 className="font-heading text-[clamp(1.8rem,4.5vw,2.6rem)] font-bold leading-[1.05] tracking-[-0.02em] text-[#f0ede8]">
+            Proyectos
+          </h2>
+          <ProjectsSegmentedToggle
+            view={view}
+            onChange={setView}
+            archiveCount={archiveProjects.length}
+          />
+        </div>
 
         <AnimatePresence mode="wait">
           {view === 'destacados' ? (
             <motion.div
               key="destacados"
-              className={s.grid}
-              variants={staggerContainer}
-              initial="hidden"
-              animate="visible"
+              id="projects-view-panel"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
               exit={{ opacity: 0, transition: { duration: 0.2 } }}
+              transition={{ duration: 0.3 }}
+              className={s.grid}
             >
               {featuredProjects.map((project, i) => (
                 <ProjectCard key={project.id} project={project} index={i} />
@@ -46,12 +56,13 @@ export default function ProjectsSection() {
           ) : (
             <motion.div
               key="todos"
+              id="projects-view-panel"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0, transition: { duration: 0.2 } }}
               transition={{ duration: 0.3 }}
             >
-              <ProjectsCatalog />
+              <ProjectCatalog />
             </motion.div>
           )}
         </AnimatePresence>

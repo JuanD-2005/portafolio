@@ -5,7 +5,7 @@
  *  1. HeroCRT              — retro CRT terminal + GSAP zoom-out
  *  2. ActionSection        — modern bridge: headline + CTAs + stats
  *  2.5. CertificatesTeaser — badge divider that expands in-place (antesala)
- *  3. ProjectsSection      — tabs: featured tríada + category archive tables
+ *  3. ProjectsSection      — segmented toggle: featured tríada + archive table
  *  4. ContactSection       — contact form + JSON links
  *
  * ─── Critical architecture note ─────────────────────────────────────────────
@@ -41,7 +41,7 @@ export default function Home() {
         {/* ── 2.5. Logros y Certificaciones — in-place expandable ──── */}
         <CertificatesTeaser />
 
-        {/* ── 3. Projects: tabs (Destacado + categorías) ────────────── */}
+        {/* ── 3. Projects: toggle segmentado (Destacados + Todos) ───── */}
         <ProjectsSection />
 
         {/* ── 4. Contact ───────────────────────────────────────────── */}

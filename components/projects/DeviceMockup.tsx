@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react'
+import ScreenPlaceholder from './ScreenPlaceholder'
 import s from './DeviceMockup.module.css'
 
 interface DeviceMockupProps {
@@ -9,27 +10,6 @@ interface DeviceMockupProps {
   screenshotUrl?: string
   /** Custom JSX to render inside the screen instead of the auto-placeholder */
   children?: ReactNode
-}
-
-/** Gradient placeholder shown when no real screenshot is available */
-function ScreenPlaceholder({ accentColor }: { accentColor: string }) {
-  return (
-    <div
-      style={{
-        width:    '100%',
-        height:   '100%',
-        background: `
-          radial-gradient(
-            ellipse 80% 60% at 30% 30%,
-            ${accentColor}22 0%,
-            ${accentColor}08 50%,
-            transparent 80%
-          ),
-          #0a0a0a
-        `,
-      }}
-    />
-  )
 }
 
 /** Browser chrome strip for laptop screens */

@@ -29,6 +29,8 @@ export interface Project {
   screenshotUrl?: string
   /** Drives the CSS placeholder gradient when no screenshot is set */
   accentColor: string
+  /** Comentario del personaje JP-OS al seleccionar este proyecto en el catálogo "Todos". */
+  assistantComment?: string
   tech: TechBadge[]
   links: {
     repo?: string
@@ -48,10 +50,12 @@ export interface ArchiveProject {
   description: string
   tech: string[]
   category: ProjectCategory
-  /** Screenshot/thumbnail en /public/project/. Si falta → placeholder por accent. */
+  /** Screenshot/thumbnail en /public/projects/{id}.png. Si falta o falla → placeholder por accent. */
   thumbnailUrl?: string
   /** Ancla del gradiente placeholder cuando no hay thumbnail. */
   accentColor?: string
+  /** Comentario del personaje JP-OS al seleccionar este proyecto en el catálogo. Sin esto, cae a un fallback genérico por categoría. */
+  assistantComment?: string
   links: {
     repo?: string
     live?: string
@@ -72,6 +76,8 @@ export interface CatalogProject {
   featured: boolean
   thumbnailUrl?: string
   accentColor?: string
+  /** Comentario del personaje JP-OS al seleccionar este proyecto en el catálogo. Sin esto, cae a un fallback genérico por categoría. */
+  assistantComment?: string
   links: {
     repo?: string
     live?: string
@@ -81,20 +87,6 @@ export interface CatalogProject {
 // ─── Projects — view toggle ────────────────────────────────────────────────────
 
 export type ProjectView = 'destacados' | 'todos'
-
-// ─── Projects — lab assistant ─────────────────────────────────────────────────
-
-export interface AssistantResponse {
-  /** Línea que "dice" el sistema (se tipea con la voz del hero). */
-  message: string
-  /** IDs de proyectos que quedan visibles. null = mostrar todos. */
-  matchedIds: string[] | null
-}
-
-export interface AssistantSuggestion {
-  label: string
-  query: string
-}
 
 // ─── Navigation ──────────────────────────────────────────────────────────────
 
