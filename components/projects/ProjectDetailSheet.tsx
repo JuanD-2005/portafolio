@@ -108,18 +108,31 @@ export default function ProjectDetailSheet({
               </button>
             </div>
 
-            <div className="flex-1 overflow-y-auto px-5 py-5">
-              <AssistantLine face={assistantFace} text={assistantText} />
-              <p className="mb-1 font-terminal text-xs text-phosphor/60">
+            {/* Misma escala de espaciado que el panel desktop: 8/16/24/32
+                (mb-2 / mb-4 / mb-6 / mb-8), y la captura como ancla arriba,
+                a ancho completo — mismo margen izquierdo que el texto. */}
+            <div className="flex-1 overflow-y-auto px-5 py-6">
+              <div className="mb-6">
+                <AssistantLine face={assistantFace} text={assistantText} />
+              </div>
+              <div className="mb-6">
+                <ProjectScreenshot
+                  key={project.id}
+                  title={project.title}
+                  imageUrl={project.thumbnailUrl}
+                  accentColor={project.accentColor}
+                />
+              </div>
+              <p className="mb-2 font-terminal text-xs text-phosphor/60">
                 {CATEGORY_LABEL[project.category]} · {project.year}
               </p>
-              <h3 className="mb-3 font-heading text-2xl font-bold text-[#f0ede8]">
+              <h3 className="mb-4 font-heading text-2xl font-bold text-[#f0ede8]">
                 {project.title}
               </h3>
-              <p className="mb-5 font-terminal text-sm leading-relaxed text-white/70">
+              <p className="mb-6 font-terminal text-sm leading-relaxed text-white/70">
                 {project.description}
               </p>
-              <div className="mb-6 flex flex-wrap gap-1.5">
+              <div className="mb-6 flex flex-wrap gap-2">
                 {project.tech.map((t) => (
                   <span
                     key={t}
@@ -129,11 +142,6 @@ export default function ProjectDetailSheet({
                   </span>
                 ))}
               </div>
-              <ProjectScreenshot
-                key={project.id}
-                title={project.title}
-                imageUrl={project.thumbnailUrl}
-              />
               {link && (
                 <a
                   href={link}

@@ -38,7 +38,7 @@ export default function ProjectsSection() {
           />
         </div>
 
-        <AnimatePresence mode="wait">
+        <AnimatePresence>
           {view === 'destacados' ? (
             <motion.div
               key="destacados"

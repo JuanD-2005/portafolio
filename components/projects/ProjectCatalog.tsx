@@ -19,6 +19,15 @@ const DESKTOP_QUERY = "(min-width: 1024px)";
 // altura de la sección. Ver "Manejo de desbordamiento" en el prompt.
 const LIST_HEIGHT = 420;
 
+// Altura COMPARTIDA por las dos columnas del panel dividido (desktop). Es una
+// sola fuente para ambas: por eso no pueden desalinearse al cambiar de
+// proyecto ni al cambiar de categoría, sin importar cuánto contenido traiga
+// cada lado — cada columna scrollea por dentro contra esta misma medida.
+const PANEL_HEIGHT = 520;
+
+// Escala de espaciado vertical del panel/hoja: 8 / 16 / 24 / 32 px
+// (Tailwind mb-2 / mb-4 / mb-6 / mb-8). No usar valores fuera de la escala.
+
 type CategoryFilter = "todos" | ProjectCategory;
 
 const CATEGORY_LABEL: Record<ProjectCategory, string> = {
@@ -190,15 +199,32 @@ function DetailPanel({
   const link = project.links.repo ?? project.links.live;
 
   return (
+    // Escala de espaciado: 8 / 16 / 24 / 32 (mb-2 / mb-4 / mb-6 / mb-8).
+    // Ningún valor vertical fuera de esa escala — ver SPACING en la cabecera.
     <div className="flex h-full flex-col">
-      <AssistantLine face={assistantFace} text={assistantText} />
-      <p className="mb-1 font-terminal text-xs text-phosphor/60">
+      <div className="mb-6">
+        <AssistantLine face={assistantFace} text={assistantText} />
+      </div>
+
+      {/* ANCLA VISUAL: la captura abre el bloque de contenido, a ancho
+          completo del panel — mismo margen izquierdo que el texto de abajo. */}
+      <div className="mb-6">
+        <ProjectScreenshot
+          key={project.id}
+          title={project.title}
+          imageUrl={project.thumbnailUrl}
+          accentColor={project.accentColor}
+        />
+      </div>
+
+      {/* meta: secundaria — pegada al título (8) para leerse como su etiqueta */}
+      <p className="mb-2 font-terminal text-xs text-phosphor/60">
         {CATEGORY_LABEL[project.category]} · {project.year}
       </p>
-      <h3 className="mb-3 font-heading text-2xl font-bold text-[#f0ede8]">
+      <h3 className="mb-4 font-heading text-2xl font-bold text-[#f0ede8]">
         {project.title}
       </h3>
-      <p className="mb-4 min-h-[4.5rem] font-terminal text-sm leading-relaxed text-white/70">
+      <p className="mb-6 min-h-[4.5rem] font-terminal text-sm leading-relaxed text-white/70">
         {typedDesc}
         <span
           aria-hidden="true"
@@ -207,7 +233,7 @@ function DetailPanel({
           ▍
         </span>
       </p>
-      <div className="mb-6 flex flex-wrap gap-1.5">
+      <div className="mb-6 flex flex-wrap gap-2">
         {project.tech.map((t) => (
           <span
             key={t}
@@ -217,11 +243,6 @@ function DetailPanel({
           </span>
         ))}
       </div>
-      <ProjectScreenshot
-        key={project.id}
-        title={project.title}
-        imageUrl={project.thumbnailUrl}
-      />
       {link && (
         <a
           href={link}
@@ -232,7 +253,7 @@ function DetailPanel({
           <span aria-hidden="true">{">"}</span> ver repo ↗
         </a>
       )}
-      <p className="mt-4 border-t border-white/5 pt-3 font-terminal text-[10px] uppercase tracking-widest text-white/25">
+      <p className="mt-6 border-t border-white/5 pt-4 font-terminal text-[10px] uppercase tracking-widest text-white/25">
         ↑↓ navegar · enter abrir
       </p>
     </div>
@@ -313,13 +334,14 @@ export default function ProjectCatalog() {
     }
   }
 
+  // Sin altura propia: el scroll y el tope los define el contenedor de cada
+  // rama (desktop = columna a PANEL_HEIGHT; mobile = wrapper a LIST_HEIGHT),
+  // así la lista nunca queda capada por debajo de su columna dejando un hueco.
   const list = (
     <div
       role="listbox"
       aria-label="Lista de proyectos"
       onKeyDown={handleListKeyDown}
-      style={{ maxHeight: LIST_HEIGHT }}
-      className="overflow-y-auto"
     >
       {filtered.map((project, i) => (
         <CatalogRow
@@ -361,9 +383,18 @@ export default function ProjectCatalog() {
       </div>
 
       {isDesktop ? (
-        <div className="grid h-fit min-h-[500px] grid-cols-[240px_1fr] gap-8">
-          <div className="h-full border-r border-white/10 pr-2">{list}</div>
-          <div className="pl-2">
+        // Bug B: altura COMPARTIDA y fija (no h-fit/min-h, que dejaban que el
+        // contenido del panel derecho dictara la altura del grid y desalineara
+        // las columnas al cambiar de proyecto). Con una altura común, ambas
+        // columnas miden exactamente lo mismo y cada una scrollea por dentro.
+        <div
+          style={{ height: PANEL_HEIGHT }}
+          className="grid grid-cols-[240px_1fr] items-stretch gap-8"
+        >
+          <div className="h-full overflow-y-auto border-r border-white/10 pr-2">
+            {list}
+          </div>
+          <div className="h-full overflow-y-auto pl-2">
             <DetailPanel
               project={active}
               assistantFace={face}
@@ -373,7 +404,9 @@ export default function ProjectCatalog() {
         </div>
       ) : (
         <>
-          {list}
+          <div style={{ maxHeight: LIST_HEIGHT }} className="overflow-y-auto">
+            {list}
+          </div>
           <ProjectDetailSheet
             project={sheetProject}
             onClose={() => setSheetProject(null)}
